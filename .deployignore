@@ -1,8 +1,9 @@
 # Pressable deployment contract
-# Source directory: .deploy/wp-content/
+# Source directory: wordpress/
 # Destination directory: htdocs/wp-content/
 # Keep repository governance and documentation out of runtime deploys.
-# Do not exclude JSON, JS, CSS, PHP, or media inside .deploy/wp-content/.
+# The source directory contains the runtime mu-plugins/themes/plugins payload.
+# Do not exclude JSON, JS, CSS, PHP, or media inside wordpress/.
 
 /.git/
 /.github/
