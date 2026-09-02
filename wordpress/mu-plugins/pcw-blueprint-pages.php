@@ -192,7 +192,7 @@ function pcw_bp_content($cfg, $page) {
     }
     if ($type==='booking') return pcw_bp_layout($cfg,'Jane-compliant booking',$title,'Booking happens securely in Jane. This page explains the handoff without an iframe or mirrored clinical system.','<section class="pcw-section pcw-detail"><div><span class="pcw-kicker">01 · Choose</span><h2>Pick the care you are looking for.</h2><p>Start from services, memberships, or the direct booking button below.</p></div><div><span class="pcw-kicker">02 · Open</span><h2>Continue in Jane.</h2><p>Use the approved domain in a new tab so Jane remains the source of truth.</p>'.($cfg['jane']?pcw_bp_link('Open Jane to book',$cfg['jane'],'primary'):pcw_bp_link('Contact for booking link',home_url('/contact/'),'primary')).'</div></section>');
     if ($type==='memberships') {
-        $paths=''; foreach(array('Essence','Balance','Harmony','Unity') as $i=>$path){ $paths.='<article class="pcw-path"><span>Path '.($i+1).'</span><h2>'.$path.'</h2><p>A consistent rhythm of care, savings, and support designed to grow with you.</p>'.pcw_bp_link('Explore this path',home_url('/'.$path.'/'),'text').'</article>'; }
+        $paths=''; foreach(array('Essence','Balance','Harmony','Unity') as $i=>$path){ $paths.='<article class="pcw-path"><span>Path '.($i+1).'</span><h2>'.$path.'</h2><p>A consistent rhythm of care, savings, and support designed to grow with you.</p>'.pcw_bp_link('Explore this path',home_url('/'.sanitize_title($path).'/'),'text').'</article>'; }
         return pcw_bp_layout($cfg,'The Wellness Paths',$title,'Choose a rhythm of care that feels supportive, clear, and possible to continue.','<section class="pcw-section pcw-paths"><div class="pcw-section-head"><div><span class="pcw-kicker">Four ways to keep going</span><h2>Consistency makes the difference.</h2></div><p>Membership details, benefits, and account actions stay connected to the approved system of record.</p></div><div class="pcw-grid pcw-path-grid">'.$paths.'</div></section><section class="pcw-section pcw-detail"><div><span class="pcw-kicker">Start the conversation</span><h2>Find the path that fits this season.</h2><p>Share your contact details and the membership path you are considering. Do not include diagnoses or treatment notes.</p>'.pcw_bp_link('Request your path',home_url('/contact/'),'primary').'</div><aside><span class="pcw-kicker">Booking boundary</span><h2>Jane remains the source of truth.</h2><p>Appointments and clinical records continue through the approved booking system.</p>'.($cfg['jane']?pcw_bp_link('Open Jane',$cfg['jane'],'quiet'):'').'</aside></section>');
     }
     if ($type==='providers') return pcw_bp_layout($cfg,'The people behind the path',$title,'Meet the humans, skills, and care philosophy behind this domain.','<section class="pcw-section"><div class="pcw-grid"><article class="pcw-card"><span class="pcw-kicker">Care team</span><h2>Experienced hands.</h2><p>Provider profiles, credentials, and availability belong in the approved staff system.</p></article><article class="pcw-card"><span class="pcw-kicker">A clear welcome</span><h2>Room to ask.</h2><p>Start with the question you have and let the team guide the next step.</p></article><article class="pcw-card"><span class="pcw-kicker">Keep going</span><h2>Care with context.</h2><p>Services, membership paths, and booking remain connected without mirroring PHI.</p></article></div></section><section class="pcw-section pcw-note">Want help choosing a provider? '.pcw_bp_link('Contact the team',home_url('/contact/'),'quiet').'</section>');
@@ -224,7 +224,7 @@ add_action('wp_footer',function(){ $c=pcw_bp_config(); echo '<footer class="pcw-
 add_action('wp_head', 'pcw_bp_css', 20);
 
 add_action('init', function () {
-    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v19') { return; }
+    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v20') { return; }
     $cfg=pcw_bp_config(); $ids=array();
     foreach (pcw_bp_pages($cfg) as $page) {
         $existing=get_page_by_path($page['slug'], OBJECT, 'page');
@@ -256,7 +256,7 @@ add_action('init', function () {
         foreach(array('footer','footer_menu') as $location){if(array_key_exists($location,get_registered_nav_menus())){$locations[$location]=$footer;}}
         set_theme_mod('nav_menu_locations',$locations);
     }
-    update_option('pcw_blueprint_pages_version','2026-09-01-v19');
+    update_option('pcw_blueprint_pages_version','2026-09-01-v20');
 }, 20);
 
 add_action('template_redirect', function () {
