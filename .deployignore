@@ -19,3 +19,11 @@
 /*.gz
 /.env*
 /.DS_Store
+
+# Preserve platform-managed WordPress runtime packages during sync.
+# Pressable may evaluate patterns before or after the configured source path,
+# so both repository-root and source-relative forms are intentionally covered.
+/themes/
+/plugins/
+/wordpress/themes/
+/wordpress/plugins/
