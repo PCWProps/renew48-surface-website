@@ -25,6 +25,9 @@ function pcw_bp_pages($cfg) {
         array('slug'=>'memberships','title'=>'The Wellness Paths','type'=>'memberships'),
         array('slug'=>'booking','title'=>'How Booking Works','type'=>'booking'),
         array('slug'=>'blog','title'=>'Unleashed Journal','type'=>'blog'),
+        array('slug'=>'benefits','title'=>'Benefits Combined','type'=>'benefits'),
+        array('slug'=>'education','title'=>'FAQ & Education','type'=>'education'),
+        array('slug'=>'article','title'=>'Education Article','type'=>'article'),
         array('slug'=>'shop','title'=>'Unearthed Treasures','type'=>'shop'),
         array('slug'=>'about','title'=>'About '.$cfg['name'],'type'=>'about'),
         array('slug'=>'providers','title'=>'Meet the Providers','type'=>'providers'),
@@ -174,7 +177,10 @@ function pcw_bp_content($cfg, $page) {
         );
     }
     if ($type==='booking') return pcw_bp_layout($cfg,'Jane-compliant booking',$title,'Booking happens securely in Jane. This page explains the handoff without an iframe or mirrored clinical system.','<section class="pcw-section pcw-detail"><div><span class="pcw-kicker">01 · Choose</span><h2>Pick the care you are looking for.</h2><p>Start from services, memberships, or the direct booking button below.</p></div><div><span class="pcw-kicker">02 · Open</span><h2>Continue in Jane.</h2><p>Use the approved domain in a new tab so Jane remains the source of truth.</p>'.($cfg['jane']?pcw_bp_link('Open Jane to book',$cfg['jane'],'primary'):pcw_bp_link('Contact for booking link',home_url('/contact/'),'primary')).'</div></section>');
-    if ($type==='blog') return pcw_bp_layout($cfg,'Unleashed · Body / Mind / Soul',$title,'A living journal for movement, recovery, ritual, and the ideas that help wellness become a practice.','<section class="pcw-section"><div class="pcw-grid"><article class="pcw-card"><span class="pcw-kicker">Body</span><h2>Move with more ease.</h2><p>Practical guidance for strength, mobility, and recovery.</p></article><article class="pcw-card"><span class="pcw-kicker">Mind</span><h2>Make space to reset.</h2><p>Simple ways to make a calmer rhythm possible.</p></article><article class="pcw-card"><span class="pcw-kicker">Soul</span><h2>Rituals that stay with you.</h2><p>Thoughtful notes for living well beyond the appointment.</p></article></div></section>');
+if ($type==='benefits') return pcw_bp_layout($cfg,'Benefits that compound',$title,'A clearer way to understand what care, consistency, and the right support can make possible.','<section class="pcw-section pcw-split"><article><span class="pcw-kicker">Body</span><h2>Move with more ease.</h2><p>Care that supports movement, recovery, and the confidence to keep going.</p></article><article><span class="pcw-kicker">Mind + soul</span><h2>Make room to reset.</h2><p>Rituals and support that help wellness become something you can keep.</p></article></section>');
+    if ($type==='education') return pcw_bp_layout($cfg,'FAQ · Education',$title,'Answers, context, and practical guidance for choosing your next step with confidence.','<section class="pcw-section pcw-detail"><div><span class="pcw-kicker">Start with a question</span><h2>Clear answers before you book.</h2><p>Explore the FAQ, learn how each service works, and keep clinical details in the approved provider system.</p></div><aside><span class="pcw-kicker">Need a human answer?</span><h2>Contact the team.</h2><p>We can help you find the right place to begin without collecting PHI here.</p>'.pcw_bp_link('Ask the team',home_url('/contact/'),'primary').'</aside></section>');
+    if ($type==='article') return pcw_bp_layout($cfg,'Unleashed · Education',$title,'A single article template for grounded notes on movement, recovery, ritual, and living well.','<article class="pcw-section pcw-editorial"><div><span class="pcw-kicker">Education note</span><h2>Small shifts, practiced consistently.</h2><p>Use this template for helpful, non-diagnostic guidance that supports the care journey.</p></div><aside><span class="pcw-kicker">Keep going</span><h2>Choose your next step.</h2><p>Return to services, memberships, or the journal when you are ready.</p>'.pcw_bp_link('Explore services',home_url('/'.$cfg['service_slug'].'/'),'quiet').'</aside></article>');
+        if ($type==='blog') return pcw_bp_layout($cfg,'Unleashed · Body / Mind / Soul',$title,'A living journal for movement, recovery, ritual, and the ideas that help wellness become a practice.','<section class="pcw-section"><div class="pcw-grid"><article class="pcw-card"><span class="pcw-kicker">Body</span><h2>Move with more ease.</h2><p>Practical guidance for strength, mobility, and recovery.</p></article><article class="pcw-card"><span class="pcw-kicker">Mind</span><h2>Make space to reset.</h2><p>Simple ways to make a calmer rhythm possible.</p></article><article class="pcw-card"><span class="pcw-kicker">Soul</span><h2>Rituals that stay with you.</h2><p>Thoughtful notes for living well beyond the appointment.</p></article></div></section>');
     if ($type==='shop') return pcw_bp_layout($cfg,'Unearthed Treasures',$title,'Approved retail essentials live in WooCommerce. Membership and clinical service state stay in their systems of record.','<section class="pcw-section"><div class="pcw-grid"><article class="pcw-card"><span class="pcw-kicker">Retail</span><h2>Curated essentials.</h2><p>Product catalog, price, taxes, checkout, and order records belong to WooCommerce.</p>'.pcw_bp_link('Browse the catalog',home_url('/shop/'),'quiet').'</article><article class="pcw-card"><span class="pcw-kicker">Gift cards</span><h2>Give a next step.</h2><p>Choose a retail gift or ask the team about treatment gifting through Jane.</p>'.pcw_bp_link('Explore gifting',home_url('/gift-cards/'),'quiet').'</article></div></section>');
     if ($type==='account') return pcw_bp_layout($cfg,'Account dashboard',$title,'A future member view for consent, path progress, loyalty, and referrals. Sensitive clinical records remain outside WordPress.','<section class="pcw-section"><div class="pcw-grid"><article class="pcw-card"><h2>Membership status</h2><p>Entitlement and path state will be read from the approved source system.</p></article><article class="pcw-card"><h2>Loyalty & referrals</h2><p>Non-PHI points and attribution summaries only.</p></article><article class="pcw-card"><h2>Notifications</h2><p>Consent-gated updates with unsubscribe controls.</p></article></div></section>');
     if ($type==='system-404' || $type==='maintenance') return '<div class="pcw-bp pcw-'.$cfg['mode'].'"><section class="pcw-empty"><span class="pcw-kicker">'.$cfg['name'].'</span><h1>'.esc_html($title).'</h1><p>Let’s get you back to a clear next step.</p><div class="pcw-actions">'.pcw_bp_link('Return home',home_url('/'),'primary').' '.pcw_bp_link('Open booking',home_url('/booking/'),'quiet').'</div></section></div>';
@@ -197,7 +203,7 @@ add_action('wp_footer',function(){ $c=pcw_bp_config(); echo '<footer class="pcw-
 add_action('wp_head', 'pcw_bp_css', 20);
 
 add_action('init', function () {
-    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v12') { return; }
+    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v13') { return; }
     $cfg=pcw_bp_config(); $ids=array();
     foreach (pcw_bp_pages($cfg) as $page) {
         $existing=get_page_by_path($page['slug'], OBJECT, 'page');
@@ -229,7 +235,7 @@ add_action('init', function () {
         foreach(array('footer','footer_menu') as $location){if(array_key_exists($location,get_registered_nav_menus())){$locations[$location]=$footer;}}
         set_theme_mod('nav_menu_locations',$locations);
     }
-    update_option('pcw_blueprint_pages_version','2026-09-01-v12');
+    update_option('pcw_blueprint_pages_version','2026-09-01-v13');
 }, 20);
 
 add_action('template_redirect', function () {
