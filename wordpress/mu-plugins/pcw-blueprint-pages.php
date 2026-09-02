@@ -144,8 +144,35 @@ function pcw_bp_content($cfg, $page) {
         $grid=''; foreach($items as $i=>$item){$slug=$slugs[$i]??sanitize_title($item);$grid.='<article class="pcw-card"><span class="pcw-kicker">'.($cfg['mode']==='chiro'?'Chiro':'Aroma').' pathway</span><h2>'.esc_html($item).'</h2><p>Understand what to expect, who it is for, and how membership benefits apply.</p>'.pcw_bp_link('View details',home_url('/'.$slug.'/'),'text').'</article>';}
         return pcw_bp_layout($cfg,$cfg['eyebrow'],$title,'A focused menu of care, organized so the right next step is easy to see.','<section class="pcw-section"><div class="pcw-grid">'.$grid.'</div></section><section class="pcw-note"><strong>Booking stays in Jane.</strong> This site explains the pathway and sends you to the approved booking destination without mirroring clinical records.</section>');
     }
-    if ($type==='detail') return pcw_bp_layout($cfg,'Service detail',$title,'A clear, grounded explanation of this pathway, including what to expect and how to begin.','<section class="pcw-section pcw-detail"><div><span class="pcw-kicker">What to expect</span><h2>Care with a beginning, middle, and next step.</h2><p>Your provider will meet you with context, conversation, and a plan that respects your pace. Clinical intake and service records remain in Jane.</p><ul><li>Conversation and context first</li><li>Personalized care plan</li><li>Simple next-step guidance</li></ul></div><aside><span class="pcw-kicker">Membership</span><h2>Included or discounted by path.</h2><p>Review the four Wellness Paths before booking.</p>'.pcw_bp_link('Explore memberships',home_url('/memberships/'),'quiet').'</aside></section>');
-    if ($type==='memberships') { $paths=''; foreach(array('Essence'=>'A steady beginning with included care.','Balance'=>'More support, savings, and earlier access.','Harmony'=>'Higher discounts and loyalty multipliers.','Unity'=>'Our most connected path for families and high-engagement care.') as $p=>$d){$paths.='<article class="pcw-path"><span>The Wellness Paths</span><h2>'.esc_html($p).'</h2><p>'.esc_html($d).'</p><strong>Monthly + annual options</strong></article>'; } return pcw_bp_layout($cfg,'Memberships',$title,'Choose the level of support that makes care easier to keep.','<section class="pcw-section"><div class="pcw-grid pcw-path-grid">'.$paths.'</div></section><section class="pcw-note"><strong>Begin your path.</strong> Request-only membership flows collect only non-PHI intent here; fulfillment and service membership state remain in Jane.</section>'); }
+    if ($type==='detail') {
+        $slug = sanitize_title($page['slug']);
+        $descriptions = array(
+            'chiropractic-therapy'=>'Hands-on chiropractic care focused on how you move, recover, and keep going.',
+            'referred-massage'=>'A coordinated massage referral path for easing tension and supporting better movement.',
+            'personal-injury'=>'A clear, documented starting point for post-injury care and provider conversation.',
+            'insurance-therapy'=>'An insurance-focused care path with the right questions answered before you book.',
+            'therapeutic-massage'=>'Intentional massage therapy shaped around the way your body is asking to recover.',
+            'reflexology'=>'A focused foot and lower-leg ritual designed to slow the pace and restore balance.',
+            'cupping'=>'Specialty cupping care with a clear explanation of options, timing, and aftercare.',
+            'aromatouch'=>'AromaTouch is a gentle, sensory ritual that pairs aromatic touch with a grounded reset.',
+            'hot-stone'=>'Warmth, pressure, and stillness come together in a deeply restorative session.',
+            'customized-massage'=>'A session shaped in the room around your goals, preferences, and current season.',
+            'deep-tissue'=>'Targeted pressure and thoughtful pacing for persistent areas of tension.',
+            'swedish'=>'Classic flowing massage for relaxation, circulation, and a softer reset.',
+            'prenatal'=>'Supportive prenatal care adapted for comfort, safety, and the changing body.',
+            '90-minute-customized'=>'More time to slow down, explore, and build a complete customized session.',
+            'cupping-zone'=>'A specialty zone for focused cupping work and a clear recovery plan.',
+            'cupping-treatment'=>'Cupping treatment explained simply, with provider context and aftercare guidance.',
+            'facial-cupping'=>'A gentle facial cupping ritual focused on circulation and a refreshed feeling.',
+            'cellulite-cupping'=>'A focused bodywork option with realistic expectations and a human next step.',
+            'biomagnetic-cupping'=>'A considered specialty session with the right provider explanation before booking.',
+            'digestive-cupping'=>'A gentle specialty pathway for people seeking supportive, non-diagnostic bodywork.'
+        );
+        $description = $descriptions[$slug] ?? 'Thoughtful care with a clear beginning, a supported middle, and a next step that belongs to you.';
+        return pcw_bp_layout($cfg, 'Care, clearly explained', $title, $description,
+            '<section class="pcw-section pcw-detail"><div><span class="pcw-kicker">The session</span><h2>Start with what your body is telling you.</h2><p>'.esc_html($description).'</p><div class="pcw-actions">'.pcw_bp_link('Choose this path',home_url('/booking/'),'primary').'</div></div><aside><span class="pcw-kicker">What to expect</span><ol class="pcw-steps"><li><strong>01 · Begin</strong><span>Share the direction you want support with.</span></li><li><strong>02 · Meet</strong><span>Connect with the provider and set the pace.</span></li><li><strong>03 · Receive</strong><span>Move through a session shaped around the plan.</span></li><li><strong>04 · Reset</strong><span>Leave with simple, grounded aftercare context.</span></li><li><strong>05 · Continue</strong><span>Choose the next step when you are ready.</span></li></ol></aside></section>'
+        );
+    }
     if ($type==='booking') return pcw_bp_layout($cfg,'Jane-compliant booking',$title,'Booking happens securely in Jane. This page explains the handoff without an iframe or mirrored clinical system.','<section class="pcw-section pcw-detail"><div><span class="pcw-kicker">01 · Choose</span><h2>Pick the care you are looking for.</h2><p>Start from services, memberships, or the direct booking button below.</p></div><div><span class="pcw-kicker">02 · Open</span><h2>Continue in Jane.</h2><p>Use the approved domain in a new tab so Jane remains the source of truth.</p>'.($cfg['jane']?pcw_bp_link('Open Jane to book',$cfg['jane'],'primary'):pcw_bp_link('Contact for booking link',home_url('/contact/'),'primary')).'</div></section>');
     if ($type==='blog') return pcw_bp_layout($cfg,'Unleashed · Body / Mind / Soul',$title,'A living journal for movement, recovery, ritual, and the ideas that help wellness become a practice.','<section class="pcw-section"><div class="pcw-grid"><article class="pcw-card"><span class="pcw-kicker">Body</span><h2>Move with more ease.</h2><p>Practical guidance for strength, mobility, and recovery.</p></article><article class="pcw-card"><span class="pcw-kicker">Mind</span><h2>Make space to reset.</h2><p>Simple ways to make a calmer rhythm possible.</p></article><article class="pcw-card"><span class="pcw-kicker">Soul</span><h2>Rituals that stay with you.</h2><p>Thoughtful notes for living well beyond the appointment.</p></article></div></section>');
     if ($type==='shop') return pcw_bp_layout($cfg,'Unearthed Treasures',$title,'Approved retail essentials live in WooCommerce. Membership and clinical service state stay in their systems of record.','<section class="pcw-section"><div class="pcw-grid"><article class="pcw-card"><span class="pcw-kicker">Retail</span><h2>Curated essentials.</h2><p>Product catalog, price, taxes, checkout, and order records belong to WooCommerce.</p>'.pcw_bp_link('Browse the catalog',home_url('/shop/'),'quiet').'</article><article class="pcw-card"><span class="pcw-kicker">Gift cards</span><h2>Give a next step.</h2><p>Choose a retail gift or ask the team about treatment gifting through Jane.</p>'.pcw_bp_link('Explore gifting',home_url('/gift-cards/'),'quiet').'</article></div></section>');
@@ -170,7 +197,7 @@ add_action('wp_footer',function(){ $c=pcw_bp_config(); echo '<footer class="pcw-
 add_action('wp_head', 'pcw_bp_css', 20);
 
 add_action('init', function () {
-    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v8') { return; }
+    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v9') { return; }
     $cfg=pcw_bp_config(); $ids=array();
     foreach (pcw_bp_pages($cfg) as $page) {
         $existing=get_page_by_path($page['slug'], OBJECT, 'page');
@@ -202,7 +229,7 @@ add_action('init', function () {
         foreach(array('footer','footer_menu') as $location){if(array_key_exists($location,get_registered_nav_menus())){$locations[$location]=$footer;}}
         set_theme_mod('nav_menu_locations',$locations);
     }
-    update_option('pcw_blueprint_pages_version','2026-09-01-v8');
+    update_option('pcw_blueprint_pages_version','2026-09-01-v9');
 }, 20);
 
 add_action('template_redirect', function () {
