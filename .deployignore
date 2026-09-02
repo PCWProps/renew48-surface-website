@@ -31,3 +31,9 @@
 # Preserve platform-managed packages when Pressable source is .deploy/wp-content.
 /.deploy/wp-content/themes/
 /.deploy/wp-content/plugins/
+
+# Source-relative forms for Pressable deployments configured from .deploy/wp-content.
+.deploy/wp-content/themes/
+.deploy/wp-content/plugins/
+wp-content/themes/
+wp-content/plugins/
