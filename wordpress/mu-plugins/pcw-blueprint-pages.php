@@ -47,11 +47,11 @@ function pcw_bp_pages($cfg) {
         array('slug'=>'reviews','title'=>'Reviews & Reputation','type'=>'funnel'),
         array('slug'=>'insurance-packages','title'=>'Insurance-Friendly Packages','type'=>'draft-funnel'),
         array('slug'=>'chatbot','title'=>'Wellness Guide','type'=>'chatbot'),
-    );
         array('slug'=>'essence','title'=>'Essence','type'=>'detail'),
         array('slug'=>'balance','title'=>'Balance','type'=>'detail'),
         array('slug'=>'harmony','title'=>'Harmony','type'=>'detail'),
         array('slug'=>'unity','title'=>'Unity','type'=>'detail'),
+    );
     // Preserve the familiar /services/ entry point on the single-brand installs
     // while keeping the canonical blueprint page domain-local.
     foreach (array(
@@ -170,7 +170,7 @@ add_action('wp_footer',function(){ $c=pcw_bp_config(); echo '<footer class="pcw-
 add_action('wp_head', 'pcw_bp_css', 20);
 
 add_action('init', function () {
-    if (get_option('pcw_blueprint_pages_version') === '2026-08-14-v3') { return; }
+    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v8') { return; }
     $cfg=pcw_bp_config(); $ids=array();
     foreach (pcw_bp_pages($cfg) as $page) {
         $existing=get_page_by_path($page['slug'], OBJECT, 'page');
@@ -202,7 +202,7 @@ add_action('init', function () {
         foreach(array('footer','footer_menu') as $location){if(array_key_exists($location,get_registered_nav_menus())){$locations[$location]=$footer;}}
         set_theme_mod('nav_menu_locations',$locations);
     }
-    update_option('pcw_blueprint_pages_version','2026-08-14-v3');
+    update_option('pcw_blueprint_pages_version','2026-09-01-v8');
 }, 20);
 
 add_action('template_redirect', function () {
