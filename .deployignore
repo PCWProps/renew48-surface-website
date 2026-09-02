@@ -27,3 +27,7 @@
 /plugins/
 /wordpress/themes/
 /wordpress/plugins/
+
+# Preserve platform-managed packages when Pressable source is .deploy/wp-content.
+/.deploy/wp-content/themes/
+/.deploy/wp-content/plugins/
