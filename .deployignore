@@ -2,7 +2,7 @@
 # Source directory: wordpress/
 # Destination directory: htdocs/wp-content/
 # Keep repository governance and documentation out of runtime deploys.
-# The source directory contains the runtime mu-plugins/themes/plugins payload.
+# The source directory contains the runtime mu-plugins/wordpress/themes/plugins payload.
 # Do not exclude JSON, JS, CSS, PHP, or media inside wordpress/.
 
 /.git/
