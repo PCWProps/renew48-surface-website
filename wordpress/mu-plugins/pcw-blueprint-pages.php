@@ -222,10 +222,10 @@ add_action('wp_body_open','pcw_bp_chrome',5);
 add_action('wp_footer',function(){ $c=pcw_bp_config(); echo '<footer class="pcw-chrome pcw-site-footer"><span>'.esc_html($c['name']).' · Desert wellness, clearly explained.</span><div class="pcw-chrome-nav"><a href="'.esc_url(home_url('/privacy-policy/')).'">Privacy</a><a href="'.esc_url(home_url('/hipaa-privacy/')).'">HIPAA & Privacy</a><a href="'.esc_url(home_url('/terms/')).'">Terms</a><a href="'.esc_url(home_url('/contact/')).'">Contact</a></div></footer>'; },5);
 
 add_action('wp_head', 'pcw_bp_css', 20);
-add_action('wp_footer',function(){echo '<script>(function(){var b=document.querySelector(".pcw-chrome-menu"),n=document.getElementById("pcw-primary-nav");if(!b||!n)return;b.addEventListener("click",function(){var open=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",open?"false":"true");n.classList.toggle("is-open",!open);});})();</script>';},6);
+add_action('wp_footer',function(){echo '<script>(function(){var b=document.querySelector(".pcw-chrome-menu"),n=document.getElementById("pcw-primary-nav");document.querySelectorAll(".sharedaddy,.sd-content,.jp-sharing-input-copy").forEach(function(e){e.remove();});if(!b||!n)return;b.addEventListener("click",function(){var open=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",open?"false":"true");n.classList.toggle("is-open",!open);});})();</script>';},6);
 
 add_action('init', function () {
-    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v21') { return; }
+    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v22') { return; }
     $cfg=pcw_bp_config(); $ids=array();
     foreach (pcw_bp_pages($cfg) as $page) {
         $existing=get_page_by_path($page['slug'], OBJECT, 'page');
@@ -257,7 +257,7 @@ add_action('init', function () {
         foreach(array('footer','footer_menu') as $location){if(array_key_exists($location,get_registered_nav_menus())){$locations[$location]=$footer;}}
         set_theme_mod('nav_menu_locations',$locations);
     }
-    update_option('pcw_blueprint_pages_version','2026-09-01-v21');
+    update_option('pcw_blueprint_pages_version','2026-09-01-v22');
 }, 20);
 
 add_action('template_redirect', function () {
