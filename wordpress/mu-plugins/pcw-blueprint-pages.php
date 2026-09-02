@@ -259,7 +259,7 @@ add_action('wp_head', 'pcw_bp_css', 20);
 add_action('wp_footer',function(){ $c=pcw_bp_config(); if($c['jane']){ echo '<div class="pcw-booking-dialog" id="pcw-booking-dialog" role="dialog" aria-modal="true" aria-labelledby="pcw-booking-title" hidden><div class="pcw-dialog-panel"><button class="pcw-dialog-close" type="button" aria-label="Close booking explanation">&#215;</button><span class="pcw-kicker">Before you book</span><h2 id="pcw-booking-title">A clear next step.</h2><p>Booking continues in Jane. Please do not include health details or other private information in this site.</p><div class="pcw-actions"><a class="pcw-btn pcw-primary" href="'.esc_url($c['jane']).'">Continue to Jane <span aria-hidden="true">&#8599;</span></a><a class="pcw-btn pcw-quiet" href="'.esc_url(home_url('/booking/')).'">How booking works</a></div></div></div>'; } echo '<script>(function(){var b=document.querySelector(".pcw-chrome-menu"),n=document.getElementById("pcw-primary-nav"),d=document.getElementById("pcw-booking-dialog");document.querySelectorAll(".sharedaddy,.sd-content,.jp-sharing-input-copy").forEach(function(e){e.remove();});if(b&&n){function closeMenu(){b.setAttribute("aria-expanded","false");n.classList.remove("is-open");}b.addEventListener("click",function(){var open=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",open?"false":"true");n.classList.toggle("is-open",!open);});b.addEventListener("keydown",function(e){if(e.key==="Escape"){closeMenu();b.focus();}});}if(!d)return;var close=d.querySelector(".pcw-dialog-close"),last;function hide(){d.hidden=true;document.body.classList.remove("pcw-dialog-open");if(last)last.focus();}function show(e){e.preventDefault();last=e.currentTarget;d.hidden=false;close.focus();document.body.classList.add("pcw-dialog-open");}document.querySelectorAll("[data-booking-trigger]").forEach(function(a){a.addEventListener("click",show);});close.addEventListener("click",hide);d.addEventListener("click",function(e){if(e.target===d)hide();});document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!d.hidden)hide();});})();</script>';},6);
 
 add_action('init', function () {
-    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v30') { return; }
+    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v31') { return; }
     $cfg=pcw_bp_config(); $ids=array();
     foreach (pcw_bp_pages($cfg) as $page) {
         $existing=get_page_by_path($page['slug'], OBJECT, 'page');
@@ -269,7 +269,7 @@ add_action('init', function () {
         if (!is_wp_error($id)) {$ids[$page['slug']]=(int)$id;}
     }
     $front=$ids[$cfg['front']]??0; if($front){update_option('show_on_front','page');update_option('page_on_front',$front);}
-    if(isset($ids['blog'])){update_option('page_for_posts',$ids['blog']);}
+    if(isset($ids['blog']) && (int)get_option('page_for_posts') === (int)$ids['blog']){delete_option('page_for_posts');}
     $menu_name=$cfg['name'].' Blueprint Primary'; $menu=wp_get_nav_menus(); $primary=0;
     foreach($menu as $m){if($m->name===$menu_name){$primary=$m->term_id;break;}}
     if(!$primary){$primary=wp_create_nav_menu($menu_name);}
@@ -291,7 +291,7 @@ add_action('init', function () {
         foreach(array('footer','footer_menu') as $location){if(array_key_exists($location,get_registered_nav_menus())){$locations[$location]=$footer;}}
         set_theme_mod('nav_menu_locations',$locations);
     }
-    update_option('pcw_blueprint_pages_version','2026-09-01-v30');
+    update_option('pcw_blueprint_pages_version','2026-09-01-v31');
 }, 20);
 
 add_action('template_redirect', function () {
