@@ -115,7 +115,7 @@ function pcw_bp_image($cfg) {
         'aromahmt' => 'AromaTouch wellness treatment',
         'renew48' => 'Renew48 provider portrait'
     );
-    $src = $images[$cfg['domain']] ?? $images['renew48'];
+    if ($cfg['domain'] === 'chirogoaz') { $src = content_url('uploads/pcw-approved/logo-chirogoaz.png'); } elseif ($cfg['domain'] === 'aromahmt') { $src = content_url('uploads/pcw-approved/aromatouch.jpg'); } else { $src = content_url('uploads/pcw-approved/casey-headshot.jpg'); }
     $alt = $alts[$cfg['domain']] ?? $alts['renew48'];
     return '<figure class="pcw-hero-media"><img src="' . esc_attr($src) . '" alt="' . esc_attr($alt) . '" loading="eager" decoding="async"></figure>';
 }
@@ -207,7 +207,7 @@ add_action('wp_footer',function(){ $c=pcw_bp_config(); echo '<footer class="pcw-
 add_action('wp_head', 'pcw_bp_css', 20);
 
 add_action('init', function () {
-    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v15') { return; }
+    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v16') { return; }
     $cfg=pcw_bp_config(); $ids=array();
     foreach (pcw_bp_pages($cfg) as $page) {
         $existing=get_page_by_path($page['slug'], OBJECT, 'page');
@@ -239,7 +239,7 @@ add_action('init', function () {
         foreach(array('footer','footer_menu') as $location){if(array_key_exists($location,get_registered_nav_menus())){$locations[$location]=$footer;}}
         set_theme_mod('nav_menu_locations',$locations);
     }
-    update_option('pcw_blueprint_pages_version','2026-09-01-v15');
+    update_option('pcw_blueprint_pages_version','2026-09-01-v16');
 }, 20);
 
 add_action('template_redirect', function () {
