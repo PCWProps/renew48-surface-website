@@ -165,6 +165,18 @@ function pcw_bp_content($cfg, $page) {
     if ($type==='services') {
         $items=$cfg['mode']==='chiro'?array('Adjustments','Evaluations','Soft Tissue Therapy','Functional Movement'):($cfg['mode']==='aroma'?array('Therapeutic Massage','Reflexology','Cupping','AromaTouch','Hot Stone','Customized Sessions'):array('Chiropractic Care','Massage Rituals','Wellness Paths','Retail Essentials'));
         $slugs=$cfg['mode']==='chiro'?array('chiropractic-adjustments','chiropractic-evaluations','soft-tissue','functional-movement'):($cfg['mode']==='aroma'?array('therapeutic-massage','reflexology','cupping','aromatouch','hot-stone','customized-massage'):array('services','services','memberships','shop'));
+        if ($cfg['mode']==='cobranded') {
+            $tabs=array(
+                array('id'=>'massage-bodywork','label'=>'Massage & Bodywork','text'=>'Restore, soften, and make room for a more grounded rhythm.','route'=>'/massage-services/'),
+                array('id'=>'chiropractic-care','label'=>'Chiropractic Care','text'=>'Move with more confidence through a clear corrective-care pathway.','route'=>'/chiropractic-services/'),
+                array('id'=>'cupping-specialty','label'=>'Cupping & Specialty','text'=>'Explore focused rituals with context, pacing, and a human handoff.','route'=>'/benefits/'),
+                array('id'=>'insurance-medical','label'=>'Insurance & Medical','text'=>'Start with the right questions before choosing an approved care route.','route'=>'/contact/')
+            );
+            $tab_markup='<div class="pcw-service-tabs" role="tablist" aria-label="Unified services pathways">';
+            foreach($tabs as $tab){$tab_markup.='<a class="pcw-service-tab" role="tab" href="'.esc_url(home_url($tab['route'])).'"><span>'.esc_html($tab['label']).'</span><p>'.esc_html($tab['text']).'</p><b aria-hidden="true">&#8599;</b></a>';}
+            $tab_markup.='</div>';
+            return pcw_bp_layout($cfg,'Unified wellness','Your Wellness. Your Path.','One place to understand the pathways, then continue to the right domain-owned service or support route.','<section class="pcw-section pcw-unified-services"><div class="pcw-section-head"><div><span class="pcw-kicker">Four ways to begin</span><h2>Choose the kind of support that fits today.</h2></div><p>Each path keeps its own service details, booking boundary, and operational owner.</p></div>'.$tab_markup.'</section>');
+        }
         $grid=''; foreach($items as $i=>$item){$slug=$slugs[$i]??sanitize_title($item);$grid.='<article class="pcw-card"><span class="pcw-kicker">'.($cfg['mode']==='chiro'?'Chiro':'Aroma').' pathway</span><h2>'.esc_html($item).'</h2><p>Understand what to expect, who it is for, and how membership benefits apply.</p>'.pcw_bp_link('View details',home_url('/'.$slug.'/'),'text').'</article>';}
         return pcw_bp_layout($cfg,$cfg['eyebrow'],$title,'A focused menu of care, organized so the right next step is easy to see.','<section class="pcw-section"><div class="pcw-grid">'.$grid.'</div></section><section class="pcw-note"><strong>Booking stays in Jane.</strong> This site explains the pathway and sends you to the approved booking destination without mirroring clinical records.</section>');
     }
@@ -247,7 +259,7 @@ add_action('wp_head', 'pcw_bp_css', 20);
 add_action('wp_footer',function(){ $c=pcw_bp_config(); if($c['jane']){ echo '<div class="pcw-booking-dialog" id="pcw-booking-dialog" role="dialog" aria-modal="true" aria-labelledby="pcw-booking-title" hidden><div class="pcw-dialog-panel"><button class="pcw-dialog-close" type="button" aria-label="Close booking explanation">&#215;</button><span class="pcw-kicker">Before you book</span><h2 id="pcw-booking-title">A clear next step.</h2><p>Booking continues in Jane. Please do not include health details or other private information in this site.</p><div class="pcw-actions"><a class="pcw-btn pcw-primary" href="'.esc_url($c['jane']).'">Continue to Jane <span aria-hidden="true">&#8599;</span></a><a class="pcw-btn pcw-quiet" href="'.esc_url(home_url('/booking/')).'">How booking works</a></div></div></div>'; } echo '<script>(function(){var b=document.querySelector(".pcw-chrome-menu"),n=document.getElementById("pcw-primary-nav"),d=document.getElementById("pcw-booking-dialog");document.querySelectorAll(".sharedaddy,.sd-content,.jp-sharing-input-copy").forEach(function(e){e.remove();});if(b&&n){b.addEventListener("click",function(){var open=b.getAttribute("aria-expanded")==="true";b.setAttribute("aria-expanded",open?"false":"true");n.classList.toggle("is-open",!open);});}if(!d)return;var close=d.querySelector(".pcw-dialog-close"),last;function hide(){d.hidden=true;document.body.classList.remove("pcw-dialog-open");if(last)last.focus();}function show(e){e.preventDefault();last=e.currentTarget;d.hidden=false;close.focus();document.body.classList.add("pcw-dialog-open");}document.querySelectorAll("[data-booking-trigger]").forEach(function(a){a.addEventListener("click",show);});close.addEventListener("click",hide);d.addEventListener("click",function(e){if(e.target===d)hide();});document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!d.hidden)hide();});})();</script>';},6);
 
 add_action('init', function () {
-    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v26') { return; }
+    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v27') { return; }
     $cfg=pcw_bp_config(); $ids=array();
     foreach (pcw_bp_pages($cfg) as $page) {
         $existing=get_page_by_path($page['slug'], OBJECT, 'page');
@@ -279,7 +291,7 @@ add_action('init', function () {
         foreach(array('footer','footer_menu') as $location){if(array_key_exists($location,get_registered_nav_menus())){$locations[$location]=$footer;}}
         set_theme_mod('nav_menu_locations',$locations);
     }
-    update_option('pcw_blueprint_pages_version','2026-09-01-v26');
+    update_option('pcw_blueprint_pages_version','2026-09-01-v27');
 }, 20);
 
 add_action('template_redirect', function () {
