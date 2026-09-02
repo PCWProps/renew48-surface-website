@@ -149,7 +149,7 @@ function pcw_bp_home($cfg) {
     $cards=''; foreach($services as $i=>$s){$cards.='<article class="pcw-card pcw-card-'.$i.'"><span class="pcw-index">0'.($i+1).'</span><h3>'.esc_html($s).'</h3><p>Thoughtful care, explained simply, with a next step that belongs to you.</p>'.pcw_bp_link('View pathway', home_url('/'.$cfg['service_slug'].'/'), 'text').'</article>';}
     $paths=''; foreach(array('Essence','Balance','Harmony','Unity') as $i=>$p){$paths.='<article class="pcw-path"><span>Path '.($i+1).'</span><h3>'.$p.'</h3><p>A steady rhythm of care, savings, and support.</p></article>';}
     $inner = $split.'<section class="pcw-section"><div class="pcw-section-head"><div><span class="pcw-kicker">Featured pathways</span><h2>Start with the kind of care you can keep.</h2></div><p>Every service has a clear explanation, a provider context, and a Jane-compliant booking path.</p></div><div class="pcw-grid">'.$cards.'</div></section><section class="pcw-section pcw-paths"><div class="pcw-section-head"><div><span class="pcw-kicker">The Wellness Paths</span><h2>Consistency makes the difference.</h2></div><p>Membership is a request-led conversation, not an impulse checkout.</p></div><div class="pcw-grid pcw-path-grid">'.$paths.'</div>'.pcw_bp_link('Explore all paths', home_url('/memberships/'), 'primary').'</section><section class="pcw-editorial"><article><span class="pcw-kicker">Unleashed · Body / Mind / Soul</span><h2>Ideas for the way you live in your body.</h2><p>Read practical, grounded notes on movement, recovery, ritual, and the small choices that compound.</p>'.pcw_bp_link('Explore the journal', home_url('/blog/'), 'quiet').'</article><article><span class="pcw-kicker">Unearthed Treasures</span><h2>Bring the ritual home.</h2><p>Shop approved wellness essentials through WooCommerce. Service and clinical state remain in Jane.</p>'.pcw_bp_link('Visit the shop', home_url('/shop/'), 'quiet').'</article></section><section class="pcw-contact-band"><div><span class="pcw-kicker">Ready when you are</span><h2>There is no wrong place to begin.</h2><p>Ask a question, open Jane, or explore a path that fits the season you are in.</p></div><div class="pcw-actions">'.$jane.' '.pcw_bp_link('Contact the team', home_url('/contact/'), 'quiet').'</div></section>';
-    return '<div class="pcw-bp pcw-'.$cfg['mode'].'"><section class="pcw-hero pcw-home-hero"><div class="pcw-hero-copy"><span class="pcw-kicker">'.esc_html($cfg['eyebrow']).'</span><h1>Feel more at home in your body.</h1><p>One clear next step at a time: chiropractic, massage, membership paths, and a more grounded way to keep going.</p><div class="pcw-actions">'.($cfg['jane'] ? pcw_bp_link('Book chiropractic', $cfg['jane'], 'primary') : pcw_bp_link('Explore services', home_url('/services/'), 'primary')).' '.pcw_bp_link('Choose your path', home_url('/memberships/'), 'quiet').'</div></div><div class="pcw-orbit pcw-sunrise" aria-hidden="true">'.pcw_bp_image($cfg).'<span></span><span></span><span></span><b>Sunrise<br>Evolution</b></div></section>'.pcw_bp_visual_mosaic($cfg).$inner.'</div>';
+    return '<div class="pcw-bp pcw-'.$cfg['mode'].'"><section class="pcw-hero pcw-home-hero"><div class="pcw-hero-copy"><span class="pcw-kicker">'.esc_html($cfg['eyebrow']).'</span><h1>Feel more at home in your body.</h1><p>One clear next step at a time: chiropractic, massage, membership paths, and a more grounded way to keep going.</p><div class="pcw-actions">'.($cfg['jane'] ? pcw_bp_link($cfg['mode']==='aroma'?'Book massage':'Book chiropractic', $cfg['jane'], 'primary') : pcw_bp_link('Explore services', home_url('/services/'), 'primary')).' '.pcw_bp_link('Choose your path', home_url('/memberships/'), 'quiet').'</div></div><div class="pcw-orbit pcw-sunrise" aria-hidden="true">'.pcw_bp_image($cfg).'<span></span><span></span><span></span><b>Sunrise<br>Evolution</b></div></section>'.pcw_bp_visual_mosaic($cfg).$inner.'</div>';
 }
 
 function pcw_bp_content($cfg, $page) {
@@ -217,7 +217,7 @@ add_action('wp_footer',function(){ $c=pcw_bp_config(); echo '<footer class="pcw-
 add_action('wp_head', 'pcw_bp_css', 20);
 
 add_action('init', function () {
-    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v17') { return; }
+    if (get_option('pcw_blueprint_pages_version') === '2026-09-01-v18') { return; }
     $cfg=pcw_bp_config(); $ids=array();
     foreach (pcw_bp_pages($cfg) as $page) {
         $existing=get_page_by_path($page['slug'], OBJECT, 'page');
@@ -249,7 +249,7 @@ add_action('init', function () {
         foreach(array('footer','footer_menu') as $location){if(array_key_exists($location,get_registered_nav_menus())){$locations[$location]=$footer;}}
         set_theme_mod('nav_menu_locations',$locations);
     }
-    update_option('pcw_blueprint_pages_version','2026-09-01-v17');
+    update_option('pcw_blueprint_pages_version','2026-09-01-v18');
 }, 20);
 
 add_action('template_redirect', function () {
