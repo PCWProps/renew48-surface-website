@@ -29,4 +29,4 @@ This project is static Vite output and includes `wrangler.toml` for Cloudflare P
 - Build command: `npm run build`
 - Build output directory: `dist`
 
-Or deploy a validated build with `npx wrangler pages deploy dist --project-name renew48-campaign-asset-studio` from this directory after authenticating Wrangler. Account, domain, and production publish settings are intentionally managed in Cloudflare rather than committed here.
+Or deploy a validated build with `npx wrangler pages deploy dist --project-name renew48-marketing-suite` from this directory after authenticating Wrangler. Account, domain, and production publish settings are intentionally managed in Cloudflare rather than committed here.
