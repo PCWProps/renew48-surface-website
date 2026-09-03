@@ -1,0 +1,16 @@
+{
+  "description": "Enables users to create, edit, and preview markdown content seamlessly, enhancing productivity for writers and developers with real-time formatting.",
+  "robots": {
+    "index": false
+  },
+  "icons": {
+    "icon": "/.figma/make/favicon.png"
+  },
+  "openGraph": {
+    "image": "/.figma/make/social-image.png"
+  },
+  "accessibility": {
+    "addBypassLinks": true,
+    "ignoreReducedMotion": false
+  }
+}

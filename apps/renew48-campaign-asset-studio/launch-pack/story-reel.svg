@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <defs>
+    <linearGradient id="scrim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4efe6" stop-opacity=".02"/><stop offset=".34" stop-color="#f4efe6" stop-opacity=".12"/><stop offset=".62" stop-color="#fbf8f2" stop-opacity=".82"/><stop offset="1" stop-color="#fbf8f2" stop-opacity=".98"/></linearGradient>
+    <style>
+      .micro { font: 600 15px Arial, sans-serif; letter-spacing: 2px; fill: #7c8b6a; }
+      .eyebrow { font: 600 17px 'Courier New', monospace; letter-spacing: 3px; fill: #c96f43; }
+      .script { font: 500 58px 'Brush Script MT', 'Segoe Script', cursive; fill: #1f2f20; }
+      .headline { font: 500 68px 'Brush Script MT', 'Segoe Script', cursive; fill: #1f2f20; }
+      .body { font: 400 25px Arial, sans-serif; fill: #57604c; }
+      .small { font: 600 16px Arial, sans-serif; letter-spacing: 2px; fill: #1f2f20; }
+      .button { font: 600 17px Arial, sans-serif; letter-spacing: 1px; fill: #f4efe6; }
+    </style>
+  </defs>
+  <rect width="1080" height="1920" fill="#f4efe6"/>
+  <image href="committed-to-wellness-desert-dawn.png" x="0" y="0" width="1080" height="1920" preserveAspectRatio="xMidYMid slice"/>
+  <rect width="1080" height="1920" fill="url(#scrim)"/>
+  <rect x="22" y="22" width="1036" height="1876" rx="16" fill="none" stroke="#f4efe6" stroke-width="3" opacity=".82"/>
+  <rect x="0" y="0" width="1080" height="150" fill="#fbf8f2" fill-opacity=".9"/>
+  <image href="renew48-logo.png" x="390" y="16" width="300" height="120" preserveAspectRatio="xMidYMid meet"/>
+  <text x="58" y="202" class="micro">TEASER  ·  DAY -7</text>
+  <text x="540" y="490" text-anchor="middle" class="script">Something</text>
+  <text x="540" y="555" text-anchor="middle" class="headline">BEAUTIFUL</text>
+  <text x="540" y="625" text-anchor="middle" class="headline">is Growing</text>
+  <text x="540" y="755" text-anchor="middle" class="eyebrow">A NEW CHAPTER OF CARE</text>
+  <text x="540" y="820" text-anchor="middle" class="body">We're preparing something special to</text>
+  <text x="540" y="856" text-anchor="middle" class="body">help you move better, feel better,</text>
+  <text x="540" y="892" text-anchor="middle" class="body">and live better—naturally.</text>
+  <text x="540" y="960" text-anchor="middle" class="body">Stay tuned. Wellness is on the way.</text>
+  <line x1="270" y1="1030" x2="470" y2="1030" stroke="#c9a66b" stroke-width="1"/>
+  <image href="renew48-badge.png" x="510" y="1000" width="60" height="60" preserveAspectRatio="xMidYMid meet"/>
+  <line x1="610" y1="1030" x2="810" y2="1030" stroke="#c9a66b" stroke-width="1"/>
+  <text x="540" y="1120" text-anchor="middle" class="small">COMMITTED TO WELLNESS</text>
+  <text x="540" y="1155" text-anchor="middle" class="small">LAUNCHING SOON</text>
+  <rect x="392" y="1190" width="296" height="54" rx="27" fill="#2f4630"/>
+  <text x="540" y="1224" text-anchor="middle" class="button">BE THE FIRST TO KNOW  →</text>
+  <rect x="0" y="1680" width="1080" height="240" fill="#fbf8f2" fill-opacity=".98"/>
+  <image href="chirogoaz-wordmark-fixed.png" x="58" y="1712" width="230" height="76" preserveAspectRatio="xMidYMid meet"/>
+  <line x1="340" y1="1720" x2="340" y2="1780" stroke="#d9a441" stroke-width="1"/>
+  <image href="aromahmt-wordmark-fixed.png" x="430" y="1712" width="230" height="76" preserveAspectRatio="xMidYMid meet"/>
+  <line x1="770" y1="1720" x2="770" y2="1780" stroke="#d9a441" stroke-width="1"/>
+  <text x="540" y="1855" text-anchor="middle" class="micro">MOVE BETTER  ·  HEAL DEEPER  ·  LIVE BETTER</text>
+</svg>

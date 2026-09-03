@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600;700&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Fraunces', ui-serif, Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-script: 'Dancing Script', cursive;
+
+  /* Studio chrome — warm editorial ground */
+  --color-canvas: #f4efe6;
+  --color-surface: #fbf8f2;
+  --color-surface-2: #efe8db;
+  --color-ink: #23291f;
+  --color-ink-soft: #57604c;
+  --color-line: #ddd3c2;
+  --color-forest: #2f4630;
+  --color-forest-deep: #1f2f20;
+  --color-sage: #7c8b6a;
+  --color-terracotta: #c96f43;
+  --color-gold: #d9a441;
+  --color-clay: #b0532f;
+
+  /* Brand palettes */
+  --color-chiro: #2f4630;
+  --color-chiro-accent: #c96f43;
+  --color-aroma: #6b4a86;
+  --color-aroma-accent: #d98a3d;
+  --color-renew: #223a2a;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Scrollbars: hidden until scroll */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+*:hover {
+  scrollbar-color: color-mix(in srgb, var(--color-ink) 22%, transparent) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+*:hover::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-ink) 20%, transparent);
+  background-clip: content-box;
+}
+
+.font-script {
+  font-family: var(--font-script);
+}
+
+/* liquid-glass button used in rendered assets */
+.lg-btn {
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-up {
+  animation: fadeUp 0.28s ease both;
+}
