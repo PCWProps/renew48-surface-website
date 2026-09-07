@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, ArrowUpRight, BadgeCheck, Check, CircleHelp, KanbanSquare, Layers3, Library as LibraryIcon, LockKeyhole, LayoutDashboard, Package, PanelsTopLeft, RotateCcw, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, BadgeCheck, Check, CircleHelp, KanbanSquare, Layers3, Library as LibraryIcon, LockKeyhole, LayoutDashboard, Package, PanelsTopLeft, RotateCcw, Sparkles } from "lucide-react";
 import { StudioProvider, useStudio } from "@/store/studio";
 import { BrandLogo } from "@/components/BrandLogo";
 import { cn } from "@/components/ui";
@@ -47,8 +47,94 @@ const LANDING_FEATURES = [
   },
 ];
 
+const CAMPAIGN_EVOLUTION = [
+  {
+    phase: "Direction",
+    title: "Find the shared promise",
+    copy: "The first board sets the emotional center: a warm desert world, a clear launch rhythm, and one promise carried across both practices.",
+    image: "/campaign-library/ctw-campaign/ctw-launch-email-campaign.png",
+    alt: "Committed to Wellness email campaign direction board",
+  },
+  {
+    phase: "Refinement",
+    title: "Shape the sequence",
+    copy: "The next pass tightens the content arc from teaser to nurture, keeping the same visual language while making every send earn its place.",
+    image: "/campaign-library/ctw-campaign/ctw-launch-email-campaign-2.png",
+    alt: "Refined Committed to Wellness email campaign sequence board",
+  },
+  {
+    phase: "Translation",
+    title: "Carry it into social",
+    copy: "The campaign becomes a family of feed posts and stories without losing its typography, photography cues, or shared care standard.",
+    image: "/campaign-library/ctw-campaign/ctw-launch-social-campaign.png",
+    alt: "Committed to Wellness social campaign translation board",
+  },
+  {
+    phase: "System",
+    title: "Make every format feel related",
+    copy: "The final system gives each platform its own shape while the campaign still reads as one considered body of work.",
+    image: "/campaign-library/ctw-campaign/ctw-launch-social-campaign-2.png",
+    alt: "Committed to Wellness social campaign system board",
+  },
+];
+
 function Reveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <div data-reveal className={className}>{children}</div>;
+}
+
+function CampaignEvolution() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const active = CAMPAIGN_EVOLUTION[activeIndex];
+
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % CAMPAIGN_EVOLUTION.length);
+    }, 6500);
+    return () => window.clearInterval(timer);
+  }, [isPaused]);
+
+  const selectSlide = (index: number) => setActiveIndex((index + CAMPAIGN_EVOLUTION.length) % CAMPAIGN_EVOLUTION.length);
+
+  return (
+    <section
+      className="marketing-evolution marketing-section"
+      id="campaign-evolution"
+      aria-labelledby="campaign-evolution-title"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onFocus={() => setIsPaused(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setIsPaused(false);
+      }}
+    >
+      <div className="evolution-heading">
+        <Reveal><div className="marketing-kicker">A campaign, in progress</div><h2 id="campaign-evolution-title">See the idea<br /><em>take shape.</em></h2></Reveal>
+        <Reveal className="evolution-heading-copy"><p>Good campaign work is iterative. This Committed to Wellness example moves from the first direction through email and social, so the collective can see how one source of truth becomes a complete month of communication.</p><span className="evolution-meta">04 passes · one connected visual language</span></Reveal>
+      </div>
+
+      <Reveal className="evolution-stage">
+        <div className="evolution-rail"><span>COMMITTED TO WELLNESS · CAMPAIGN EXAMPLE</span><span>{String(activeIndex + 1).padStart(2, "0")} / {String(CAMPAIGN_EVOLUTION.length).padStart(2, "0")}</span></div>
+        <div className="evolution-image-frame"><img key={active.image} className="evolution-image" src={assetPath(active.image)} alt={active.alt} /></div>
+        <div className="evolution-caption">
+          <div><span className="evolution-phase">{active.phase}</span><h3>{active.title}</h3><p>{active.copy}</p></div>
+          <div className="evolution-controls" aria-label="Campaign example controls">
+            <button type="button" aria-label="Previous campaign example" onClick={() => selectSlide(activeIndex - 1)}><ArrowLeft className="size-4" /></button>
+            <button type="button" aria-label="Next campaign example" onClick={() => selectSlide(activeIndex + 1)}><ArrowRight className="size-4" /></button>
+          </div>
+        </div>
+        <div className="evolution-thumbs" role="tablist" aria-label="Campaign evolution examples">
+          {CAMPAIGN_EVOLUTION.map((slide, index) => (
+            <button key={slide.phase} type="button" role="tab" aria-selected={activeIndex === index} className={cn("evolution-thumb", activeIndex === index && "is-active")} onClick={() => selectSlide(index)}>
+              <span className="evolution-thumb-image"><img src={assetPath(slide.image)} alt="" /></span><span className="evolution-thumb-copy"><small>0{index + 1}</small><strong>{slide.phase}</strong></span>
+            </button>
+          ))}
+        </div>
+        <div className="evolution-note"><Sparkles className="size-4" /> The studio keeps the campaign source visible while each format becomes editable.</div>
+      </Reveal>
+    </section>
+  );
 }
 
 function MarketingHome() {
@@ -85,6 +171,8 @@ function MarketingHome() {
           <Reveal className="section-heading"><div className="marketing-kicker">The working surface</div><h2>Less hunting.<br /><em>More making.</em></h2></Reveal>
           <Reveal className="section-heading-copy"><p>The studio is designed for the moment a member campaign moves from an idea to a coordinated month of work. Keep the source of truth visible, make the content editable, and make the handoff easy to trust.</p><div className="stat-line"><span>01</span><span>Brief to launch</span><span>One connected flow</span></div></Reveal>
         </section>
+
+        <CampaignEvolution />
 
         <section id="workflow" className="marketing-feature-stack marketing-section">
           {LANDING_FEATURES.map((feature, index) => (
