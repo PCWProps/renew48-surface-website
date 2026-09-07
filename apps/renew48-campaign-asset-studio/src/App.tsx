@@ -117,7 +117,6 @@ function CampaignEvolution() {
   const active = CAMPAIGN_EVOLUTION[activeIndex];
   const sceneBuildProgress = Math.min(1, Math.max(0, sceneProgress * CAMPAIGN_EVOLUTION.length - activeIndex));
   const scenePosition = sceneProgress * (CAMPAIGN_EVOLUTION.length - 1);
-  const nextIndex = Math.min(CAMPAIGN_EVOLUTION.length - 1, activeIndex + 1);
 
   useEffect(() => {
     let frame = 0;
@@ -188,14 +187,12 @@ function CampaignEvolution() {
             <div className="evolution-scene-stage" style={{ opacity: .98 + sceneBuildProgress * .02 }}>
               <div className="evolution-scene-orbit orbit-one" />
               <div className="evolution-scene-orbit orbit-two" />
-              <div className="evolution-scene-layer scene-layer-back" style={{ transform: `translate3d(${sceneBuildProgress * 12}px, ${sceneBuildProgress * -10}px, 0) rotate(${sceneBuildProgress * 3 - 3}deg)` }}><img src={assetPath(CAMPAIGN_EVOLUTION[activeIndex].image)} alt="" /></div>
-              <div className="evolution-scene-layer scene-layer-front" style={{ transform: `translate3d(${sceneBuildProgress * -10}px, ${sceneBuildProgress * 13}px, 0) rotate(${sceneBuildProgress * -3 + 3}deg)` }}><img src={assetPath(CAMPAIGN_EVOLUTION[nextIndex].image)} alt="" /></div>
               <div className="evolution-scene-token scene-token-source" style={{ transform: `translate3d(${sceneBuildProgress * -8}px, ${sceneBuildProgress * 16}px, 0)` }}><span>01</span><strong>Source board</strong><small>Direction stays visible</small></div>
               <div className="evolution-scene-token scene-token-system" style={{ transform: `translate3d(${sceneBuildProgress * 13}px, ${sceneBuildProgress * -15}px, 0)` }}><span>04</span><strong>Working system</strong><small>Every format stays related</small></div>
               <div ref={trackWindowRef} className="evolution-track-window">
                 <div ref={trackRef} className="evolution-track" style={{ transform: `translate3d(-${sceneProgress * trackTravel}px, 0, 0)` }}>
                   {CAMPAIGN_EVOLUTION.map((slide, index) => (
-                    <article key={slide.phase} className={cn("evolution-track-card", activeIndex === index && "is-active")} style={{ opacity: Math.max(.42, 1 - Math.min(1, Math.abs(index - scenePosition)) * .38), transform: `scale(${Math.max(.83, 1 - Math.min(1, Math.abs(index - scenePosition)) * .13)}) rotateY(${Math.max(-12, Math.min(12, (index - scenePosition) * 9))}deg)` }} aria-hidden={activeIndex !== index}>
+                    <article key={slide.phase} className={cn("evolution-track-card", activeIndex === index && "is-active")} style={{ opacity: Math.max(.18, 1 - Math.min(1, Math.abs(index - scenePosition)) * .82), transform: `scale(${Math.max(.83, 1 - Math.min(1, Math.abs(index - scenePosition)) * .13)}) rotateY(${Math.max(-12, Math.min(12, (index - scenePosition) * 9))}deg)` }} aria-hidden={activeIndex !== index}>
                       <div className="evolution-rail"><span>WELLNESS RESET · FICTIONAL EXAMPLE</span><span>0{index + 1} / 04</span></div>
                       <div className="evolution-track-image"><img src={assetPath(slide.image)} alt={slide.alt} /></div>
                     </article>
@@ -216,6 +213,65 @@ function CampaignEvolution() {
         </div>
       </div>
     </section>
+  );
+}
+
+function FeatureFlowRow({ feature, index }: { feature: typeof LANDING_FEATURES[number]; index: number }) {
+  const rowRef = useRef<HTMLDivElement | null>(null);
+  const [flowProgress, setFlowProgress] = useState(0);
+  const copyDirection = index % 2 === 0 ? -1 : 1;
+  const shotDirection = copyDirection * -1;
+  const shotRotation = index % 2 === 0 ? 1.5 : -1.5;
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (reduceMotion.matches) {
+      setFlowProgress(1);
+      return;
+    }
+
+    let frame = 0;
+    const update = () => {
+      const row = rowRef.current;
+      if (!row) return;
+      const rect = row.getBoundingClientRect();
+      const travel = window.innerHeight + rect.height;
+      const normalized = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / travel));
+      const nextProgress = normalized < .42
+        ? normalized / .42
+        : normalized > .7
+          ? (1 - normalized) / .3
+          : 1;
+      const eased = 1 - Math.pow(1 - Math.max(0, Math.min(1, nextProgress)), 3);
+      setFlowProgress((current) => Math.abs(current - eased) > .01 ? eased : current);
+    };
+    const onScroll = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  const travel = typeof window === "undefined" ? 360 : Math.min(window.innerWidth * .32, 420);
+  const style = {
+    "--feature-copy-offset": `${(1 - flowProgress) * travel * copyDirection}px`,
+    "--feature-shot-offset": `${(1 - flowProgress) * travel * shotDirection}px`,
+    "--feature-shot-rotation": `${shotRotation}deg`,
+    "--feature-flow-opacity": `${.2 + flowProgress * .8}`,
+  } as React.CSSProperties;
+
+  return (
+    <div ref={rowRef} data-reveal className={`marketing-feature-row ${index % 2 ? "reverse" : ""}`} style={style}>
+      <div className="feature-copy"><div className="feature-icon">{feature.icon}</div><span className="feature-number">{feature.number}</span><h3>{feature.title}</h3><p>{feature.copy}</p><a className="marketing-text-link" href={ADDON_PATH}>Get the Studio <ArrowUpRight className="size-4" /></a></div>
+      <div className="feature-shot"><div className="shot-rail"><span>RENEW48 / STUDIO</span><span>{feature.number} / 03</span></div><img src={assetPath(feature.image)} alt={feature.alt} /><div className="shot-glass" /></div>
+    </div>
   );
 }
 
@@ -253,15 +309,10 @@ function MarketingHome() {
         <CampaignEvolution />
 
         <section id="workflow" className="marketing-feature-stack marketing-section">
-          {LANDING_FEATURES.map((feature, index) => (
-            <Reveal key={feature.number} className={`marketing-feature-row ${index % 2 ? "reverse" : ""}`}>
-              <div className="feature-copy"><div className="feature-icon">{feature.icon}</div><span className="feature-number">{feature.number}</span><h3>{feature.title}</h3><p>{feature.copy}</p><a className="marketing-text-link" href={ADDON_PATH}>Get the Studio <ArrowUpRight className="size-4" /></a></div>
-              <div className="feature-shot"><div className="shot-rail"><span>RENEW48 / STUDIO</span><span>{feature.number} / 03</span></div><img src={assetPath(feature.image)} alt={feature.alt} /><div className="shot-glass" /></div>
-            </Reveal>
-          ))}
+          {LANDING_FEATURES.map((feature, index) => <FeatureFlowRow key={feature.number} feature={feature} index={index} />)}
         </section>
 
-        <section className="marketing-system-band marketing-section"><Reveal className="system-band-copy"><div className="marketing-kicker">The same care, in every format</div><h2>From the first board<br /><em>to the final handoff.</em></h2><p>Campaign references stay references. Approved logos, badges, photos, and type stay selectable sources. The studio keeps those boundaries clear while you build.</p><div className="system-band-actions"><a className="marketing-button light" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a><a className="marketing-text-link light-link" href={EXAMPLES_PATH}>See the example set <ArrowUpRight className="size-4" /></a></div></Reveal><Reveal className="system-collage"><div className="collage-card collage-large"><img src={assetPath("/campaign-library/wellness-reset/wellness-reset-content-suite.png")} alt="Wellness Reset fictional campaign content suite" /></div><div className="collage-card collage-small"><img src={assetPath("/assets/renew48-logo.png")} alt="Renew48 logo source" /></div><div className="collage-note"><Check className="size-4" /> Fictional reference set</div></Reveal></section>
+        <section id="system" className="marketing-system-band marketing-section"><Reveal className="system-band-copy"><div className="marketing-kicker">The same care, in every format</div><h2>From the first board<br /><em>to the final handoff.</em></h2><p>Campaign references stay references. Approved logos, badges, photos, and type stay selectable sources. The studio keeps those boundaries clear while you build.</p><div className="system-band-actions"><a className="marketing-button light" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a><a className="marketing-text-link light-link" href={EXAMPLES_PATH}>See the example set <ArrowUpRight className="size-4" /></a></div></Reveal><Reveal className="system-collage"><div className="collage-card collage-large"><img src={assetPath("/campaign-library/wellness-reset/wellness-reset-content-suite.png")} alt="Wellness Reset fictional campaign content suite" /></div><div className="collage-card collage-small"><img src={assetPath("/assets/renew48-logo.png")} alt="Renew48 logo source" /></div><div className="collage-note"><Check className="size-4" /> Fictional reference set</div></Reveal></section>
 
         <section id="access" className="marketing-final-cta marketing-section"><Reveal><LockKeyhole className="mx-auto mb-5 size-7 text-terracotta" /><div className="marketing-kicker">Private by design</div><h2>The public story stays open.<br /><em>The working studio stays yours.</em></h2><p>Campaign work is served behind the existing PCWProps Cloudflare Access policy for the protected `/marketing-studio/studio/` route.</p><a className="marketing-button primary" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a></Reveal></section>
       </main>
