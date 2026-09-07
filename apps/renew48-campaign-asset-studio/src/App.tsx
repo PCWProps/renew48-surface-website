@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { LayoutDashboard, Library as LibraryIcon, PanelsTopLeft, Package, KanbanSquare, RotateCcw, CircleHelp } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowRight, ArrowUpRight, BadgeCheck, Check, CircleHelp, KanbanSquare, Layers3, Library as LibraryIcon, LockKeyhole, LayoutDashboard, Package, PanelsTopLeft, RotateCcw, Sparkles } from "lucide-react";
 import { StudioProvider, useStudio } from "@/store/studio";
 import { BrandLogo } from "@/components/BrandLogo";
 import { cn } from "@/components/ui";
@@ -13,6 +13,98 @@ import { Workflow } from "@/components/studio/Workflow";
 import { Guidance } from "@/components/studio/Guidance";
 
 type View = "dashboard" | "workspace" | "library" | "export" | "workflow" | "guidance";
+
+const assetPath = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
+
+const LANDING_FEATURES = [
+  {
+    number: "01",
+    title: "Start with the brief",
+    copy: "Turn one campaign idea into a clear sequence of messages, channels, dates, and destinations before the first asset is made.",
+    image: "/campaign-library/Marketing-Campaign.png",
+    alt: "Renew48 campaign planning reference board",
+    icon: <Layers3 className="size-5" />,
+  },
+  {
+    number: "02",
+    title: "Build from one system",
+    copy: "Keep the Renew48 wordmark, badges, typography, desert palette, and approved visual language consistent across every format.",
+    image: "/campaign-library/marketing-assets-1.png",
+    alt: "Renew48 campaign asset reference board",
+    icon: <Sparkles className="size-5" />,
+  },
+  {
+    number: "03",
+    title: "Review, package, hand off",
+    copy: "Edit structured content, preview the real platform shape, move assets through approval, and export a clean campaign package.",
+    image: "/campaign-library/emailcampaign.png",
+    alt: "Renew48 email campaign reference board",
+    icon: <BadgeCheck className="size-5" />,
+  },
+];
+
+function Reveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <div data-reveal className={className}>{children}</div>;
+}
+
+function MarketingHome() {
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("is-visible")), { threshold: 0.14 });
+    const nodes = document.querySelectorAll("[data-reveal]");
+    nodes.forEach((node) => observer.observe(node));
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div className="marketing-site">
+      <div className="marketing-top-rail"><span>RENEW48 WELLNESS COLLECTIVE</span><span>CAMPAIGN ASSET STUDIO · PRIVATE WORKSPACE</span></div>
+      <header className="marketing-nav">
+        <a href="/" className="marketing-brand" aria-label="Renew48 Campaign Asset Studio home"><BrandLogo brandId="renew48" context="wordmark" surfaceTone="light" height={44} /></a>
+        <nav aria-label="Marketing navigation"><a href="#why">Why the studio</a><a href="#workflow">How it works</a><a className="marketing-nav-cta" href="/marketing-suite">Enter studio <ArrowUpRight className="size-4" /></a></nav>
+      </header>
+
+      <main>
+        <section className="marketing-hero">
+          <div className="marketing-hero-copy">
+            <Reveal><div className="marketing-kicker">A calmer campaign practice</div><h1>One visual system.<br /><em>Everywhere it matters.</em></h1><p>Renew48 Campaign Asset Studio brings the brief, brand kit, content, formats, review, and handoff into one considered workspace.</p><div className="marketing-actions"><a className="marketing-button primary" href="/marketing-suite">Add the Campaign Studio <ArrowRight className="size-4" /></a><a className="marketing-text-link" href="#why">See how it works <ArrowRight className="size-4" /></a></div></Reveal>
+          </div>
+          <Reveal className="marketing-hero-art">
+            <div className="hero-glow" /><div className="hero-orbit orbit-one" /><div className="hero-orbit orbit-two" />
+            <div className="hero-board-frame"><img src={assetPath("/assets/desert-sunrise-source.png")} alt="Desert sunrise visual reference" /><div className="hero-board-sheen" /></div>
+            <div className="hero-logo-card"><img src={assetPath("/assets/renew48-logo.png")} alt="Renew48" /></div>
+            <div className="hero-badge-card"><img src={assetPath("/assets/3db6b.png")} alt="Renew48 Wellness Collective badge" /></div>
+            <div className="hero-caption"><span className="hero-caption-dot" /> Rooted in the desert · elevated by care</div>
+          </Reveal>
+        </section>
+
+        <section id="why" className="marketing-intro marketing-section">
+          <Reveal className="section-heading"><div className="marketing-kicker">The working surface</div><h2>Less hunting.<br /><em>More making.</em></h2></Reveal>
+          <Reveal className="section-heading-copy"><p>The studio is designed for the moment a campaign moves from an idea to a coordinated month of work. Keep the source of truth visible, make the content editable, and make the handoff easy to trust.</p><div className="stat-line"><span>01</span><span>Brief to launch</span><span>One connected flow</span></div></Reveal>
+        </section>
+
+        <section id="workflow" className="marketing-feature-stack marketing-section">
+          {LANDING_FEATURES.map((feature, index) => (
+            <Reveal key={feature.number} className={`marketing-feature-row ${index % 2 ? "reverse" : ""}`}>
+              <div className="feature-copy"><div className="feature-icon">{feature.icon}</div><span className="feature-number">{feature.number}</span><h3>{feature.title}</h3><p>{feature.copy}</p><a className="marketing-text-link" href="/marketing-suite">Open the workspace <ArrowUpRight className="size-4" /></a></div>
+              <div className="feature-shot"><div className="shot-rail"><span>RENEW48 / STUDIO</span><span>{feature.number} / 03</span></div><img src={assetPath(feature.image)} alt={feature.alt} /><div className="shot-glass" /></div>
+            </Reveal>
+          ))}
+        </section>
+
+        <section className="marketing-system-band marketing-section"><Reveal className="system-band-copy"><div className="marketing-kicker">The same care, in every format</div><h2>From the first board<br /><em>to the final handoff.</em></h2><p>Campaign references stay references. Approved logos, badges, photos, and type stay selectable sources. The studio keeps those boundaries clear while you build.</p><a className="marketing-button light" href="/marketing-suite">Add the Campaign Studio <ArrowRight className="size-4" /></a></Reveal><Reveal className="system-collage"><div className="collage-card collage-large"><img src={assetPath("/campaign-library/marketing-assets-2.png")} alt="Renew48 marketing asset examples" /></div><div className="collage-card collage-small"><img src={assetPath("/assets/renew48-logo.png")} alt="Renew48 logo source" /></div><div className="collage-note"><Check className="size-4" /> Source-aware by design</div></Reveal></section>
+
+        <section id="access" className="marketing-final-cta marketing-section"><Reveal><LockKeyhole className="mx-auto mb-5 size-7 text-terracotta" /><div className="marketing-kicker">Private by design</div><h2>The public story stays open.<br /><em>The working studio stays yours.</em></h2><p>Campaign work is served behind the existing PCWProps Cloudflare Access policy for the protected `/marketing-suite/` route.</p><a className="marketing-button primary" href="/marketing-suite">Add the Campaign Studio <ArrowRight className="size-4" /></a></Reveal></section>
+      </main>
+      <footer className="marketing-footer"><div><BrandLogo brandId="renew48" context="wordmark" surfaceTone="light" height={34} /><span>Campaign Asset Studio</span></div><div>© 2026 Renew48 Wellness Collective</div></footer>
+    </div>
+  );
+}
+
+function StudioEntry() {
+  const [unlocked, setUnlocked] = useState(false);
+  if (unlocked) return <Shell />;
+  return <div className="studio-entry"><div className="studio-entry-rail">PCWPROPS AUTH · CLOUDFLARE ACCESS VERIFIED ROUTE</div><div className="studio-entry-card"><BrandLogo brandId="renew48" context="wordmark" surfaceTone="light" height={52} /><div className="marketing-kicker">Private campaign workspace</div><h1>Welcome back<br /><em>to the studio.</em></h1><p>This workspace is behind the PCWProps Cloudflare Access policy. Continue to open the campaign dashboard, library, workflow, and export tools.</p><div className="entry-status"><LockKeyhole className="size-4" /><span>Protected route · `/marketing-suite/`</span></div><button className="marketing-button primary" type="button" onClick={() => setUnlocked(true)}>Continue to Campaign Studio <ArrowRight className="size-4" /></button><a className="marketing-text-link" href="/">Back to the public overview</a></div><div className="studio-entry-foot"><span>Renew48 Wellness Collective</span><span>Authorized collaborators only</span></div></div>;
+}
 
 const NAV: { id: View; label: string; icon: React.ReactNode }[] = [
   { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard className="size-4" /> },
@@ -122,9 +214,6 @@ function Workspace({ selectedId, onSelect }: { selectedId: string; onSelect: (id
 }
 
 export default function App() {
-  return (
-    <StudioProvider>
-      <Shell />
-    </StudioProvider>
-  );
+  const protectedRoute = typeof window !== "undefined" && window.location.pathname.startsWith("/marketing-suite");
+  return <StudioProvider>{protectedRoute ? <StudioEntry /> : <MarketingHome />}</StudioProvider>;
 }

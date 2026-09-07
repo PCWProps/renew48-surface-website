@@ -30,3 +30,10 @@ This project is static Vite output and includes `wrangler.toml` for Cloudflare P
 - Build output directory: `dist`
 
 Or deploy a validated build with `npx wrangler pages deploy dist --project-name renew48-marketing-suite` from this directory after authenticating Wrangler. Account, domain, and production publish settings are intentionally managed in Cloudflare rather than committed here.
+
+## Routes and access boundary
+
+- `/` is the public marketing overview.
+- `/marketing-suite/` is the private studio entry route.
+
+Cloudflare Access is the security boundary for the studio route. The account's existing `Renew48 Marketing Suite` Access application covers `app.renew48.com/marketing-suite/*`; the in-app entry screen is only a user-facing handoff after the edge policy, not a replacement for authentication.
