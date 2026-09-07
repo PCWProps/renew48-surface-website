@@ -109,7 +109,8 @@ body {
   --marketing-clay: #b76543;
   --marketing-brass: #c79745;
   min-height: 100%;
-  overflow: hidden;
+  overflow-x: clip;
+  overflow-y: visible;
   background: var(--marketing-sand);
   color: var(--marketing-ink);
   font-family: var(--font-sans);
@@ -181,9 +182,9 @@ body {
 .stat-line span:first-child { color: var(--marketing-clay); }
 .marketing-evolution { position: relative; width: 100%; max-width: none; height: 360vh; margin: 0; padding: 0; background: linear-gradient(180deg, #efe6d8, #d9c4a6 42%, #efe6d8); }
 .marketing-evolution::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: url('/marketing-studio/assets/desert-sunrise-source.png') center / cover no-repeat; opacity: .2; mix-blend-mode: multiply; }
-.evolution-cinema-sticky { position: sticky; top: 0; z-index: 1; display: grid; place-items: center; box-sizing: border-box; height: 100vh; min-height: 660px; padding: clamp(20px, 4vw, 54px) 5vw; overflow: hidden; }
+.evolution-cinema-sticky { position: sticky; top: 0; z-index: 1; display: grid; place-items: center; box-sizing: border-box; width: 100%; height: 100vh; min-height: 660px; padding: 0; overflow: hidden; }
 .evolution-cinema-sticky::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 18% 20%, #fff8e959, transparent 32%), radial-gradient(circle at 84% 86%, #b7654335, transparent 28%); }
-.evolution-cinema-shell { position: relative; z-index: 1; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; width: min(1260px, 100%); max-height: 880px; min-height: min(670px, calc(100vh - 40px)); padding: clamp(22px, 3vw, 40px); box-sizing: border-box; overflow: hidden; border: 1px solid #f9efe0a8; border-radius: 32px; color: var(--marketing-ivory); background: linear-gradient(135deg, #18382ef7, #25483af2 58%, #173027f5); box-shadow: 0 34px 100px #18382e45, inset 0 1px #ffffff36; }
+.evolution-cinema-shell { position: relative; z-index: 1; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; width: 100%; height: 100%; max-height: none; min-height: 100%; padding: clamp(22px, 3vw, 48px) 5vw; box-sizing: border-box; overflow: hidden; border: 0; border-top: 1px solid #f9efe0a8; border-bottom: 1px solid #f9efe0a8; border-radius: 0; color: var(--marketing-ivory); background: linear-gradient(115deg, #18382ef4, #25483ae8 54%, #173027ed), url('/marketing-studio/assets/desert-sunrise-source.png') center / cover no-repeat; box-shadow: 0 34px 100px #18382e45, inset 0 1px #ffffff36; }
 .evolution-cinema-shell::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(122deg, #fff7dd15 0 8%, transparent 22% 72%, #fff7dd0c 86%, transparent 100%); }
 .evolution-cinema-top { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(320px, .75fr); align-items: end; gap: 40px; padding-bottom: clamp(20px, 3vw, 34px); border-bottom: 1px solid #f4e6cf34; }
 .evolution-cinema-top h2 { margin: 12px 0 0; color: var(--marketing-ivory); font: 500 clamp(43px, 5.6vw, 80px)/.91 var(--font-serif); letter-spacing: -.07em; }
