@@ -17,6 +17,7 @@ type View = "dashboard" | "workspace" | "library" | "export" | "workflow" | "gui
 const assetPath = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
 const MARKETING_PATH = "/marketing-studio/";
 const ADDON_PATH = "/marketing-studio/add-on/";
+const EXAMPLES_PATH = "/marketing-studio/examples/";
 const STUDIO_PATH = "/marketing-studio/studio/";
 const STUDIO_ROUTE_PREFIX = "/marketing-studio/studio";
 
@@ -25,24 +26,24 @@ const LANDING_FEATURES = [
     number: "01",
     title: "Start with the brief",
     copy: "Turn one campaign idea into a clear sequence of messages, channels, dates, and destinations before the first asset is made.",
-    image: "/campaign-library/Marketing-Campaign.png",
-    alt: "Renew48 campaign planning reference board",
+    image: "/campaign-library/wellness-reset/wellness-reset-campaign-map.png",
+    alt: "Wellness Reset fictional campaign planning board",
     icon: <Layers3 className="size-5" />,
   },
   {
     number: "02",
     title: "Build from one system",
     copy: "Keep each member’s approved wordmarks, badges, typography, palette, imagery, and visual language accurate across every format.",
-    image: "/campaign-library/marketing-assets-1.png",
-    alt: "Renew48 campaign asset reference board",
+    image: "/campaign-library/wellness-reset/wellness-reset-content-suite.png",
+    alt: "Wellness Reset fictional campaign content suite",
     icon: <Sparkles className="size-5" />,
   },
   {
     number: "03",
     title: "Review, package, hand off",
     copy: "Edit structured content, preview the real platform shape, move assets through approval, and export a clean campaign package.",
-    image: "/campaign-library/emailcampaign.png",
-    alt: "Renew48 email campaign reference board",
+    image: "/campaign-library/wellness-reset/wellness-reset-social-system.png",
+    alt: "Wellness Reset fictional social campaign system",
     icon: <BadgeCheck className="size-5" />,
   },
 ];
@@ -51,35 +52,59 @@ const CAMPAIGN_EVOLUTION = [
   {
     phase: "Direction",
     title: "Find the shared promise",
-    copy: "The first board sets the emotional center: a warm desert world, a clear launch rhythm, and one promise carried across both practices.",
-    image: "/campaign-library/ctw-campaign/ctw-launch-email-campaign.png",
-    alt: "Committed to Wellness email campaign direction board",
+    copy: "The first board sets the emotional center: a warm desert world, a clear rhythm, and one useful promise for people finding their way back to balance.",
+    image: "/campaign-library/wellness-reset/wellness-reset-campaign-map.png",
+    alt: "Wellness Reset fictional campaign evolution map",
   },
   {
     phase: "Refinement",
     title: "Shape the sequence",
-    copy: "The next pass tightens the content arc from teaser to nurture, keeping the same visual language while making every send earn its place.",
-    image: "/campaign-library/ctw-campaign/ctw-launch-email-campaign-2.png",
-    alt: "Refined Committed to Wellness email campaign sequence board",
+    copy: "The next pass turns the idea into a calm email journey, giving every message a job while the visual language remains recognizably related.",
+    image: "/campaign-library/wellness-reset/wellness-reset-email-sequence.png",
+    alt: "Wellness Reset fictional email sequence board",
   },
   {
     phase: "Translation",
     title: "Carry it into social",
-    copy: "The campaign becomes a family of feed posts and stories without losing its typography, photography cues, or shared care standard.",
-    image: "/campaign-library/ctw-campaign/ctw-launch-social-campaign.png",
-    alt: "Committed to Wellness social campaign translation board",
+    copy: "The campaign becomes a family of feed posts, stories, and reels without losing its typography, photography cues, or restorative point of view.",
+    image: "/campaign-library/wellness-reset/wellness-reset-social-system.png",
+    alt: "Wellness Reset fictional social campaign system board",
   },
   {
     phase: "System",
     title: "Make every format feel related",
     copy: "The final system gives each platform its own shape while the campaign still reads as one considered body of work.",
-    image: "/campaign-library/ctw-campaign/ctw-launch-social-campaign-2.png",
-    alt: "Committed to Wellness social campaign system board",
+    image: "/campaign-library/wellness-reset/wellness-reset-content-suite.png",
+    alt: "Wellness Reset fictional web and content suite board",
   },
 ];
 
 function Reveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <div data-reveal className={className}>{children}</div>;
+}
+
+function useMarketingMotion() {
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("is-visible")), { threshold: 0.14 });
+    const nodes = document.querySelectorAll("[data-reveal]");
+    nodes.forEach((node) => observer.observe(node));
+    const updateProgress = () => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(maxScroll > 0 ? window.scrollY / maxScroll : 0);
+    };
+    updateProgress();
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    window.addEventListener("resize", updateProgress);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", updateProgress);
+      window.removeEventListener("resize", updateProgress);
+    };
+  }, []);
+
+  return scrollProgress;
 }
 
 function CampaignEvolution() {
@@ -88,7 +113,7 @@ function CampaignEvolution() {
   const active = CAMPAIGN_EVOLUTION[activeIndex];
 
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % CAMPAIGN_EVOLUTION.length);
     }, 6500);
@@ -111,11 +136,11 @@ function CampaignEvolution() {
     >
       <div className="evolution-heading">
         <Reveal><div className="marketing-kicker">A campaign, in progress</div><h2 id="campaign-evolution-title">See the idea<br /><em>take shape.</em></h2></Reveal>
-        <Reveal className="evolution-heading-copy"><p>Good campaign work is iterative. This Committed to Wellness example moves from the first direction through email and social, so the collective can see how one source of truth becomes a complete month of communication.</p><span className="evolution-meta">04 passes · one connected visual language</span></Reveal>
+        <Reveal className="evolution-heading-copy"><p>Good campaign work is iterative. This fictional Wellness Reset example moves from the first direction through email, social, and web, so members can see how one source of truth becomes a complete month of communication.</p><span className="evolution-meta">04 passes · one connected visual language</span></Reveal>
       </div>
 
       <Reveal className="evolution-stage">
-        <div className="evolution-rail"><span>COMMITTED TO WELLNESS · CAMPAIGN EXAMPLE</span><span>{String(activeIndex + 1).padStart(2, "0")} / {String(CAMPAIGN_EVOLUTION.length).padStart(2, "0")}</span></div>
+        <div className="evolution-rail"><span>WELLNESS RESET · FICTIONAL CAMPAIGN EXAMPLE</span><span>{String(activeIndex + 1).padStart(2, "0")} / {String(CAMPAIGN_EVOLUTION.length).padStart(2, "0")}</span></div>
         <div className="evolution-image-frame"><img key={active.image} className="evolution-image" src={assetPath(active.image)} alt={active.alt} /></div>
         <div className="evolution-caption">
           <div><span className="evolution-phase">{active.phase}</span><h3>{active.title}</h3><p>{active.copy}</p></div>
@@ -131,22 +156,19 @@ function CampaignEvolution() {
             </button>
           ))}
         </div>
-        <div className="evolution-note"><Sparkles className="size-4" /> The studio keeps the campaign source visible while each format becomes editable.</div>
+        <div className="evolution-note"><Sparkles className="size-4" /> Fictional example · the studio keeps the campaign source visible while each format becomes editable.</div>
+        <a className="evolution-detail-link" href={EXAMPLES_PATH}>View the full campaign example <ArrowUpRight className="size-4" /></a>
       </Reveal>
     </section>
   );
 }
 
 function MarketingHome() {
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("is-visible")), { threshold: 0.14 });
-    const nodes = document.querySelectorAll("[data-reveal]");
-    nodes.forEach((node) => observer.observe(node));
-    return () => observer.disconnect();
-  }, []);
+  const scrollProgress = useMarketingMotion();
 
   return (
     <div className="marketing-site">
+      <div className="marketing-scroll-progress" style={{ width: `${scrollProgress * 100}%` }} aria-hidden="true" />
       <div className="marketing-top-rail"><span>RENEW48 WELLNESS COLLECTIVE</span><span>CAMPAIGN ASSET STUDIO · PRIVATE WORKSPACE</span></div>
       <header className="marketing-nav">
         <a href={MARKETING_PATH} className="marketing-brand" aria-label="Renew48 Campaign Asset Studio home"><BrandLogo brandId="renew48" context="wordmark" surfaceTone="light" height={44} /></a>
@@ -183,11 +205,46 @@ function MarketingHome() {
           ))}
         </section>
 
-        <section className="marketing-system-band marketing-section"><Reveal className="system-band-copy"><div className="marketing-kicker">The same care, in every format</div><h2>From the first board<br /><em>to the final handoff.</em></h2><p>Campaign references stay references. Approved logos, badges, photos, and type stay selectable sources. The studio keeps those boundaries clear while you build.</p><a className="marketing-button light" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a></Reveal><Reveal className="system-collage"><div className="collage-card collage-large"><img src={assetPath("/campaign-library/marketing-assets-2.png")} alt="Renew48 marketing asset examples" /></div><div className="collage-card collage-small"><img src={assetPath("/assets/renew48-logo.png")} alt="Renew48 logo source" /></div><div className="collage-note"><Check className="size-4" /> Source-aware by design</div></Reveal></section>
+        <section className="marketing-system-band marketing-section"><Reveal className="system-band-copy"><div className="marketing-kicker">The same care, in every format</div><h2>From the first board<br /><em>to the final handoff.</em></h2><p>Campaign references stay references. Approved logos, badges, photos, and type stay selectable sources. The studio keeps those boundaries clear while you build.</p><div className="system-band-actions"><a className="marketing-button light" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a><a className="marketing-text-link light-link" href={EXAMPLES_PATH}>See the example set <ArrowUpRight className="size-4" /></a></div></Reveal><Reveal className="system-collage"><div className="collage-card collage-large"><img src={assetPath("/campaign-library/wellness-reset/wellness-reset-content-suite.png")} alt="Wellness Reset fictional campaign content suite" /></div><div className="collage-card collage-small"><img src={assetPath("/assets/renew48-logo.png")} alt="Renew48 logo source" /></div><div className="collage-note"><Check className="size-4" /> Fictional reference set</div></Reveal></section>
 
         <section id="access" className="marketing-final-cta marketing-section"><Reveal><LockKeyhole className="mx-auto mb-5 size-7 text-terracotta" /><div className="marketing-kicker">Private by design</div><h2>The public story stays open.<br /><em>The working studio stays yours.</em></h2><p>Campaign work is served behind the existing PCWProps Cloudflare Access policy for the protected `/marketing-studio/studio/` route.</p><a className="marketing-button primary" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a></Reveal></section>
       </main>
       <footer className="marketing-footer"><div><BrandLogo brandId="renew48" context="wordmark" surfaceTone="light" height={34} /><span>Campaign Asset Studio</span></div><div>© 2026 Renew48 Wellness Collective</div></footer>
+    </div>
+  );
+}
+
+function ExampleCampaignPage() {
+  const scrollProgress = useMarketingMotion();
+
+  return (
+    <div className="marketing-site marketing-examples-page">
+      <div className="marketing-scroll-progress" style={{ width: `${scrollProgress * 100}%` }} aria-hidden="true" />
+      <div className="marketing-top-rail"><span>RENEW48 WELLNESS COLLECTIVE</span><span>FICTIONAL CAMPAIGN EXAMPLE · WELLNESS RESET</span></div>
+      <header className="marketing-nav">
+        <a href={MARKETING_PATH} className="marketing-brand" aria-label="Renew48 Campaign Asset Studio home"><BrandLogo brandId="renew48" context="wordmark" surfaceTone="light" height={44} /></a>
+        <nav aria-label="Example campaign navigation"><a className="marketing-text-link" href={MARKETING_PATH}><ArrowLeft className="size-4" /> Back to studio overview</a><a className="marketing-nav-cta" href={ADDON_PATH}>Get the Studio <ArrowUpRight className="size-4" /></a></nav>
+      </header>
+
+      <main>
+        <section className="examples-hero marketing-section">
+          <Reveal><div className="marketing-kicker">Fictional campaign example</div><h1>One idea.<br /><em>Many useful moments.</em></h1><p>Wellness Reset is a made-for-demo campaign showing how the studio takes a single health and wellness idea through planning, message design, email, social, web, and handoff.</p><a className="marketing-text-link" href="#example-journey">Follow the journey <ArrowRight className="size-4" /></a></Reveal>
+          <Reveal className="examples-hero-art"><img src={assetPath("/campaign-library/wellness-reset/wellness-reset-campaign-map.png")} alt="Wellness Reset fictional campaign evolution map" /><div className="examples-hero-stamp">REFERENCE ONLY<br /><strong>NOT A LIVE CAMPAIGN</strong></div></Reveal>
+        </section>
+
+        <section id="example-journey" className="example-journey marketing-section">
+          <div className="example-journey-intro"><Reveal><div className="marketing-kicker">The working sequence</div><h2>Watch it<br /><em>become a system.</em></h2></Reveal><Reveal><p>Each pass adds clarity without losing the original point of view. The side-to-side rhythm mirrors the way a member can move between the brief, the source library, and the final formats.</p></Reveal></div>
+          {CAMPAIGN_EVOLUTION.map((slide, index) => (
+            <Reveal key={slide.phase} className={cn("example-story-row", index % 2 === 1 && "reverse")}>
+              <div className="example-story-copy"><span className="feature-number">0{index + 1} · {slide.phase}</span><h3>{slide.title}</h3><p>{slide.copy}</p><a className="marketing-text-link" href={ADDON_PATH}>Get the Studio <ArrowUpRight className="size-4" /></a></div>
+              <div className="example-story-image"><div className="shot-rail"><span>WELLNESS RESET / EXAMPLE</span><span>0{index + 1} / 04</span></div><img src={assetPath(slide.image)} alt={slide.alt} /></div>
+            </Reveal>
+          ))}
+        </section>
+
+        <section className="marketing-final-cta marketing-section"><Reveal><Sparkles className="mx-auto mb-5 size-7 text-terracotta" /><div className="marketing-kicker">Your brand stays yours</div><h2>Bring your own story<br /><em>into the system.</em></h2><p>Wellness Reset is only an example. Your wordmarks, palette, type, photography, and campaign idea become the source of truth for the work you actually want to make.</p><a className="marketing-button primary" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a></Reveal></section>
+      </main>
+      <footer className="marketing-footer"><div><BrandLogo brandId="renew48" context="wordmark" surfaceTone="light" height={34} /><span>Campaign Asset Studio</span></div><div>Fictional example · © 2026 Renew48 Wellness Collective</div></footer>
     </div>
   );
 }
@@ -313,5 +370,6 @@ export default function App() {
   const path = typeof window !== "undefined" ? window.location.pathname : "/";
   const protectedRoute = path.startsWith(STUDIO_ROUTE_PREFIX) || path.startsWith("/marketing-suite");
   const addonRoute = path.startsWith(ADDON_PATH.replace(/\/$/, ""));
-  return <StudioProvider>{protectedRoute ? <StudioEntry /> : addonRoute ? <SubscriptionAddonPage /> : <MarketingHome />}</StudioProvider>;
+  const examplesRoute = path.startsWith(EXAMPLES_PATH.replace(/\/$/, ""));
+  return <StudioProvider>{protectedRoute ? <StudioEntry /> : addonRoute ? <SubscriptionAddonPage /> : examplesRoute ? <ExampleCampaignPage /> : <MarketingHome />}</StudioProvider>;
 }

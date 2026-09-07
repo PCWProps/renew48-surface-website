@@ -36,6 +36,7 @@ Or deploy a validated build with `npx wrangler pages deploy dist --project-name 
 ## Routes and access boundary
 
 - `/marketing-studio/` is the public marketing overview.
+- `/marketing-studio/examples/` is the public fictional Wellness Reset campaign example, shown as a scroll-authored sequence.
 - `/marketing-studio/add-on/` is the public subscription add-on handoff page.
 - `/marketing-studio/studio/` is the private studio entry route.
 
