@@ -31,7 +31,7 @@ const LANDING_FEATURES = [
   {
     number: "02",
     title: "Build from one system",
-    copy: "Keep the Renew48 wordmark, badges, typography, desert palette, and approved visual language consistent across every format.",
+    copy: "Keep each member’s approved wordmarks, badges, typography, palette, imagery, and visual language accurate across every format.",
     image: "/campaign-library/marketing-assets-1.png",
     alt: "Renew48 campaign asset reference board",
     icon: <Sparkles className="size-5" />,
@@ -69,7 +69,7 @@ function MarketingHome() {
       <main>
         <section className="marketing-hero">
           <div className="marketing-hero-copy">
-            <Reveal><div className="marketing-kicker">A calmer campaign practice</div><h1>One visual system.<br /><em>Everywhere it matters.</em></h1><p>Renew48 Campaign Asset Studio brings the brief, brand kit, content, formats, review, and handoff into one considered workspace.</p><div className="marketing-actions"><a className="marketing-button primary" href={STUDIO_PATH}>Add the Campaign Studio <ArrowRight className="size-4" /></a><a className="marketing-text-link" href="#why">See how it works <ArrowRight className="size-4" /></a></div></Reveal>
+            <Reveal><div className="marketing-kicker">For Renew48 collective members</div><h1>One visual system.<br /><em>Everywhere it matters.</em></h1><p>Build your campaigns in one considered workspace while keeping your approved wordmarks, badges, typography, imagery, and brand details accurate in every format.</p><div className="marketing-actions"><a className="marketing-button primary" href={STUDIO_PATH}>Add the Campaign Studio <ArrowRight className="size-4" /></a><a className="marketing-text-link" href="#why">See how it works <ArrowRight className="size-4" /></a></div></Reveal>
           </div>
           <Reveal className="marketing-hero-art">
             <div className="hero-glow" /><div className="hero-orbit orbit-one" /><div className="hero-orbit orbit-two" />
@@ -82,7 +82,7 @@ function MarketingHome() {
 
         <section id="why" className="marketing-intro marketing-section">
           <Reveal className="section-heading"><div className="marketing-kicker">The working surface</div><h2>Less hunting.<br /><em>More making.</em></h2></Reveal>
-          <Reveal className="section-heading-copy"><p>The studio is designed for the moment a campaign moves from an idea to a coordinated month of work. Keep the source of truth visible, make the content editable, and make the handoff easy to trust.</p><div className="stat-line"><span>01</span><span>Brief to launch</span><span>One connected flow</span></div></Reveal>
+          <Reveal className="section-heading-copy"><p>The studio is designed for the moment a member campaign moves from an idea to a coordinated month of work. Keep the source of truth visible, make the content editable, and make the handoff easy to trust.</p><div className="stat-line"><span>01</span><span>Brief to launch</span><span>One connected flow</span></div></Reveal>
         </section>
 
         <section id="workflow" className="marketing-feature-stack marketing-section">
