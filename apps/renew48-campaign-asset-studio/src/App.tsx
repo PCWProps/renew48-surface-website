@@ -16,6 +16,7 @@ type View = "dashboard" | "workspace" | "library" | "export" | "workflow" | "gui
 
 const assetPath = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
 const MARKETING_PATH = "/marketing-studio/";
+const ADDON_PATH = "/marketing-studio/add-on/";
 const STUDIO_PATH = "/marketing-studio/studio/";
 const STUDIO_ROUTE_PREFIX = "/marketing-studio/studio";
 
@@ -63,13 +64,13 @@ function MarketingHome() {
       <div className="marketing-top-rail"><span>RENEW48 WELLNESS COLLECTIVE</span><span>CAMPAIGN ASSET STUDIO · PRIVATE WORKSPACE</span></div>
       <header className="marketing-nav">
         <a href={MARKETING_PATH} className="marketing-brand" aria-label="Renew48 Campaign Asset Studio home"><BrandLogo brandId="renew48" context="wordmark" surfaceTone="light" height={44} /></a>
-        <nav aria-label="Marketing navigation"><a href="#why">Why the studio</a><a href="#workflow">How it works</a><a className="marketing-nav-cta" href={STUDIO_PATH}>Enter studio <ArrowUpRight className="size-4" /></a></nav>
+        <nav aria-label="Marketing navigation"><a href="#why">Why the studio</a><a href="#workflow">How it works</a><a className="marketing-nav-cta" href={ADDON_PATH}>Get the Studio <ArrowUpRight className="size-4" /></a></nav>
       </header>
 
       <main>
         <section className="marketing-hero">
           <div className="marketing-hero-copy">
-            <Reveal><div className="marketing-kicker">For Renew48 collective members</div><h1>One visual system.<br /><em>Everywhere it matters.</em></h1><p>Build your campaigns in one considered workspace. Keep your branding accurate with approved wordmarks, badges, typography, imagery, and brand details carried correctly into every format.</p><div className="marketing-actions"><a className="marketing-button primary" href={STUDIO_PATH}>Add the Campaign Studio <ArrowRight className="size-4" /></a><a className="marketing-text-link" href="#why">See how it works <ArrowRight className="size-4" /></a></div></Reveal>
+            <Reveal><div className="marketing-kicker">For Renew48 collective members</div><h1>One visual system.<br /><em>Everywhere it matters.</em></h1><p>Build your campaigns in one considered workspace. Keep your branding accurate with approved wordmarks, badges, typography, imagery, and brand details carried correctly into every format.</p><div className="marketing-actions"><a className="marketing-button primary" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a><a className="marketing-text-link" href="#why">See how it works <ArrowRight className="size-4" /></a></div></Reveal>
           </div>
           <Reveal className="marketing-hero-art">
             <div className="hero-glow" /><div className="hero-orbit orbit-one" /><div className="hero-orbit orbit-two" />
@@ -88,15 +89,15 @@ function MarketingHome() {
         <section id="workflow" className="marketing-feature-stack marketing-section">
           {LANDING_FEATURES.map((feature, index) => (
             <Reveal key={feature.number} className={`marketing-feature-row ${index % 2 ? "reverse" : ""}`}>
-              <div className="feature-copy"><div className="feature-icon">{feature.icon}</div><span className="feature-number">{feature.number}</span><h3>{feature.title}</h3><p>{feature.copy}</p><a className="marketing-text-link" href={STUDIO_PATH}>Open the workspace <ArrowUpRight className="size-4" /></a></div>
+              <div className="feature-copy"><div className="feature-icon">{feature.icon}</div><span className="feature-number">{feature.number}</span><h3>{feature.title}</h3><p>{feature.copy}</p><a className="marketing-text-link" href={ADDON_PATH}>Get the Studio <ArrowUpRight className="size-4" /></a></div>
               <div className="feature-shot"><div className="shot-rail"><span>RENEW48 / STUDIO</span><span>{feature.number} / 03</span></div><img src={assetPath(feature.image)} alt={feature.alt} /><div className="shot-glass" /></div>
             </Reveal>
           ))}
         </section>
 
-        <section className="marketing-system-band marketing-section"><Reveal className="system-band-copy"><div className="marketing-kicker">The same care, in every format</div><h2>From the first board<br /><em>to the final handoff.</em></h2><p>Campaign references stay references. Approved logos, badges, photos, and type stay selectable sources. The studio keeps those boundaries clear while you build.</p><a className="marketing-button light" href={STUDIO_PATH}>Add the Campaign Studio <ArrowRight className="size-4" /></a></Reveal><Reveal className="system-collage"><div className="collage-card collage-large"><img src={assetPath("/campaign-library/marketing-assets-2.png")} alt="Renew48 marketing asset examples" /></div><div className="collage-card collage-small"><img src={assetPath("/assets/renew48-logo.png")} alt="Renew48 logo source" /></div><div className="collage-note"><Check className="size-4" /> Source-aware by design</div></Reveal></section>
+        <section className="marketing-system-band marketing-section"><Reveal className="system-band-copy"><div className="marketing-kicker">The same care, in every format</div><h2>From the first board<br /><em>to the final handoff.</em></h2><p>Campaign references stay references. Approved logos, badges, photos, and type stay selectable sources. The studio keeps those boundaries clear while you build.</p><a className="marketing-button light" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a></Reveal><Reveal className="system-collage"><div className="collage-card collage-large"><img src={assetPath("/campaign-library/marketing-assets-2.png")} alt="Renew48 marketing asset examples" /></div><div className="collage-card collage-small"><img src={assetPath("/assets/renew48-logo.png")} alt="Renew48 logo source" /></div><div className="collage-note"><Check className="size-4" /> Source-aware by design</div></Reveal></section>
 
-        <section id="access" className="marketing-final-cta marketing-section"><Reveal><LockKeyhole className="mx-auto mb-5 size-7 text-terracotta" /><div className="marketing-kicker">Private by design</div><h2>The public story stays open.<br /><em>The working studio stays yours.</em></h2><p>Campaign work is served behind the existing PCWProps Cloudflare Access policy for the protected `/marketing-studio/studio/` route.</p><a className="marketing-button primary" href={STUDIO_PATH}>Add the Campaign Studio <ArrowRight className="size-4" /></a></Reveal></section>
+        <section id="access" className="marketing-final-cta marketing-section"><Reveal><LockKeyhole className="mx-auto mb-5 size-7 text-terracotta" /><div className="marketing-kicker">Private by design</div><h2>The public story stays open.<br /><em>The working studio stays yours.</em></h2><p>Campaign work is served behind the existing PCWProps Cloudflare Access policy for the protected `/marketing-studio/studio/` route.</p><a className="marketing-button primary" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a></Reveal></section>
       </main>
       <footer className="marketing-footer"><div><BrandLogo brandId="renew48" context="wordmark" surfaceTone="light" height={34} /><span>Campaign Asset Studio</span></div><div>© 2026 Renew48 Wellness Collective</div></footer>
     </div>
@@ -107,6 +108,10 @@ function StudioEntry() {
   const [unlocked, setUnlocked] = useState(false);
   if (unlocked) return <Shell />;
   return <div className="studio-entry"><div className="studio-entry-rail">PCWPROPS AUTH · CLOUDFLARE ACCESS VERIFIED ROUTE</div><div className="studio-entry-card"><BrandLogo brandId="renew48" context="wordmark" surfaceTone="light" height={52} /><div className="marketing-kicker">Private campaign workspace</div><h1>Welcome back<br /><em>to the studio.</em></h1><p>This workspace is behind the PCWProps Cloudflare Access policy. Continue to open the campaign dashboard, library, workflow, and export tools.</p><div className="entry-status"><LockKeyhole className="size-4" /><span>Protected route · `/marketing-studio/studio/`</span></div><button className="marketing-button primary" type="button" onClick={() => setUnlocked(true)}>Continue to Campaign Studio <ArrowRight className="size-4" /></button><a className="marketing-text-link" href={MARKETING_PATH}>Back to the public overview</a></div><div className="studio-entry-foot"><span>Renew48 Wellness Collective</span><span>Authorized collaborators only</span></div></div>;
+}
+
+function SubscriptionAddonPage() {
+  return <div className="studio-entry"><div className="studio-entry-rail">RENEW48 COLLECTIVE · SUBSCRIPTION ADD-ON</div><div className="studio-entry-card"><BrandLogo brandId="renew48" context="wordmark" surfaceTone="light" height={52} /><div className="marketing-kicker">Campaign Asset Studio</div><h1>Get the <em>Studio.</em></h1><p>The Campaign Asset Studio is a subscription add-on for Renew48 collective members. We’re finishing the member setup and billing flow now.</p><div className="entry-status"><Sparkles className="size-4" /><span>Member campaign tools · coming soon</span></div><a className="marketing-button primary" href={MARKETING_PATH}>Back to the overview <ArrowRight className="size-4" /></a></div><div className="studio-entry-foot"><span>Renew48 Wellness Collective</span><span>Built for collective members</span></div></div>;
 }
 
 const NAV: { id: View; label: string; icon: React.ReactNode }[] = [
@@ -219,5 +224,6 @@ function Workspace({ selectedId, onSelect }: { selectedId: string; onSelect: (id
 export default function App() {
   const path = typeof window !== "undefined" ? window.location.pathname : "/";
   const protectedRoute = path.startsWith(STUDIO_ROUTE_PREFIX) || path.startsWith("/marketing-suite");
-  return <StudioProvider>{protectedRoute ? <StudioEntry /> : <MarketingHome />}</StudioProvider>;
+  const addonRoute = path.startsWith(ADDON_PATH.replace(/\/$/, ""));
+  return <StudioProvider>{protectedRoute ? <StudioEntry /> : addonRoute ? <SubscriptionAddonPage /> : <MarketingHome />}</StudioProvider>;
 }

@@ -36,6 +36,7 @@ Or deploy a validated build with `npx wrangler pages deploy dist --project-name 
 ## Routes and access boundary
 
 - `/marketing-studio/` is the public marketing overview.
+- `/marketing-studio/add-on/` is the public subscription add-on handoff page.
 - `/marketing-studio/studio/` is the private studio entry route.
 
 Cloudflare Access is the security boundary for the studio route. The public overview is served at `apps.renew48.com/marketing-studio/`; the private `/marketing-studio/studio/` path is routed through the existing PCWProps Access policy. The in-app entry screen is only a user-facing handoff after the edge policy, not a replacement for authentication.
