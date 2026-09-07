@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, ArrowUpRight, BadgeCheck, Check, CircleHelp, KanbanSquare, Layers3, Library as LibraryIcon, LockKeyhole, LayoutDashboard, Package, PanelsTopLeft, RotateCcw, Sparkles } from "lucide-react";
 import { StudioProvider, useStudio } from "@/store/studio";
 import { BrandLogo } from "@/components/BrandLogo";
@@ -108,57 +108,113 @@ function useMarketingMotion() {
 }
 
 function CampaignEvolution() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const trackWindowRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const [sceneProgress, setSceneProgress] = useState(0);
+  const [trackTravel, setTrackTravel] = useState(0);
+  const activeIndex = Math.min(CAMPAIGN_EVOLUTION.length - 1, Math.floor(sceneProgress * CAMPAIGN_EVOLUTION.length));
   const active = CAMPAIGN_EVOLUTION[activeIndex];
+  const sceneBuildProgress = Math.min(1, Math.max(0, sceneProgress * CAMPAIGN_EVOLUTION.length - activeIndex));
+  const scenePosition = sceneProgress * (CAMPAIGN_EVOLUTION.length - 1);
+  const nextIndex = Math.min(CAMPAIGN_EVOLUTION.length - 1, activeIndex + 1);
 
   useEffect(() => {
-    if (isPaused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => {
-      setActiveIndex((current) => (current + 1) % CAMPAIGN_EVOLUTION.length);
-    }, 6500);
-    return () => window.clearInterval(timer);
-  }, [isPaused]);
+    let frame = 0;
+    const update = () => {
+      const section = sectionRef.current;
+      if (!section) return;
+      const distance = section.offsetHeight - window.innerHeight;
+      const nextProgress = distance > 0 ? Math.max(0, Math.min(1, -section.getBoundingClientRect().top / distance)) : 0;
+      setSceneProgress(nextProgress);
+    };
+    const onScroll = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
 
-  const selectSlide = (index: number) => setActiveIndex((index + CAMPAIGN_EVOLUTION.length) % CAMPAIGN_EVOLUTION.length);
+  useEffect(() => {
+    const updateTravel = () => {
+      const windowWidth = trackWindowRef.current?.clientWidth ?? 0;
+      const trackWidth = trackRef.current?.scrollWidth ?? 0;
+      setTrackTravel(Math.max(0, trackWidth - windowWidth));
+    };
+    updateTravel();
+    const observer = new ResizeObserver(updateTravel);
+    if (trackWindowRef.current) observer.observe(trackWindowRef.current);
+    if (trackRef.current) observer.observe(trackRef.current);
+    window.addEventListener("resize", updateTravel);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateTravel);
+    };
+  }, []);
+
+  const goToSlide = (index: number) => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const distance = section.offsetHeight - window.innerHeight;
+    const target = section.offsetTop + distance * (index / (CAMPAIGN_EVOLUTION.length - 1));
+    window.scrollTo({ top: target, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  };
 
   return (
-    <section
-      className="marketing-evolution marketing-section"
-      id="campaign-evolution"
-      aria-labelledby="campaign-evolution-title"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onFocus={() => setIsPaused(true)}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setIsPaused(false);
-      }}
-    >
-      <div className="evolution-heading">
-        <Reveal><div className="marketing-kicker">A campaign, in progress</div><h2 id="campaign-evolution-title">See the idea<br /><em>take shape.</em></h2></Reveal>
-        <Reveal className="evolution-heading-copy"><p>Good campaign work is iterative. This fictional Wellness Reset example moves from the first direction through email, social, and web, so members can see how one source of truth becomes a complete month of communication.</p><span className="evolution-meta">04 passes · one connected visual language</span></Reveal>
-      </div>
-
-      <Reveal className="evolution-stage">
-        <div className="evolution-rail"><span>WELLNESS RESET · FICTIONAL CAMPAIGN EXAMPLE</span><span>{String(activeIndex + 1).padStart(2, "0")} / {String(CAMPAIGN_EVOLUTION.length).padStart(2, "0")}</span></div>
-        <div className="evolution-image-frame"><img key={active.image} className="evolution-image" src={assetPath(active.image)} alt={active.alt} /></div>
-        <div className="evolution-caption">
-          <div><span className="evolution-phase">{active.phase}</span><h3>{active.title}</h3><p>{active.copy}</p></div>
-          <div className="evolution-controls" aria-label="Campaign example controls">
-            <button type="button" aria-label="Previous campaign example" onClick={() => selectSlide(activeIndex - 1)}><ArrowLeft className="size-4" /></button>
-            <button type="button" aria-label="Next campaign example" onClick={() => selectSlide(activeIndex + 1)}><ArrowRight className="size-4" /></button>
+    <section ref={sectionRef} className="marketing-evolution marketing-section" id="campaign-evolution" aria-labelledby="campaign-evolution-title">
+      <div className="evolution-cinema-sticky">
+        <div className="evolution-cinema-shell">
+          <div className="evolution-cinema-top">
+            <Reveal><div className="marketing-kicker">A campaign, in progress</div><h2 id="campaign-evolution-title">See the idea <em>take shape.</em></h2></Reveal>
+            <Reveal className="evolution-cinema-summary"><p>Good campaign work is iterative. This fictional Wellness Reset example moves from the first direction through email, social, and web, so members can see how one source of truth becomes a complete month of communication.</p><span className="evolution-cinema-meta">04 passes · one connected visual language</span><div className="evolution-cinema-progress"><span>Scroll to evolve</span><div className="evolution-progress-line"><i style={{ width: `${sceneProgress * 100}%` }} /></div><strong>{String(activeIndex + 1).padStart(2, "0")} / {String(CAMPAIGN_EVOLUTION.length).padStart(2, "0")}</strong></div></Reveal>
           </div>
+
+          <div className="evolution-cinema-body">
+            <div className="evolution-stage-nav" role="tablist" aria-label="Campaign evolution stages">
+              {CAMPAIGN_EVOLUTION.map((slide, index) => (
+                <button key={slide.phase} type="button" role="tab" aria-selected={activeIndex === index} className={cn("evolution-stage-step", activeIndex === index && "is-active")} onClick={() => goToSlide(index)}>
+                  <span>0{index + 1}</span><strong>{slide.phase}</strong><i />
+                </button>
+              ))}
+            </div>
+
+            <div className="evolution-scene-stage" style={{ opacity: .98 + sceneBuildProgress * .02 }}>
+              <div className="evolution-scene-orbit orbit-one" />
+              <div className="evolution-scene-orbit orbit-two" />
+              <div className="evolution-scene-layer scene-layer-back" style={{ transform: `translate3d(${sceneBuildProgress * 12}px, ${sceneBuildProgress * -10}px, 0) rotate(${sceneBuildProgress * 3 - 3}deg)` }}><img src={assetPath(CAMPAIGN_EVOLUTION[activeIndex].image)} alt="" /></div>
+              <div className="evolution-scene-layer scene-layer-front" style={{ transform: `translate3d(${sceneBuildProgress * -10}px, ${sceneBuildProgress * 13}px, 0) rotate(${sceneBuildProgress * -3 + 3}deg)` }}><img src={assetPath(CAMPAIGN_EVOLUTION[nextIndex].image)} alt="" /></div>
+              <div className="evolution-scene-token scene-token-source" style={{ transform: `translate3d(${sceneBuildProgress * -8}px, ${sceneBuildProgress * 16}px, 0)` }}><span>01</span><strong>Source board</strong><small>Direction stays visible</small></div>
+              <div className="evolution-scene-token scene-token-system" style={{ transform: `translate3d(${sceneBuildProgress * 13}px, ${sceneBuildProgress * -15}px, 0)` }}><span>04</span><strong>Working system</strong><small>Every format stays related</small></div>
+              <div ref={trackWindowRef} className="evolution-track-window">
+                <div ref={trackRef} className="evolution-track" style={{ transform: `translate3d(-${sceneProgress * trackTravel}px, 0, 0)` }}>
+                  {CAMPAIGN_EVOLUTION.map((slide, index) => (
+                    <article key={slide.phase} className={cn("evolution-track-card", activeIndex === index && "is-active")} style={{ opacity: Math.max(.42, 1 - Math.min(1, Math.abs(index - scenePosition)) * .38), transform: `scale(${Math.max(.83, 1 - Math.min(1, Math.abs(index - scenePosition)) * .13)}) rotateY(${Math.max(-12, Math.min(12, (index - scenePosition) * 9))}deg)` }} aria-hidden={activeIndex !== index}>
+                      <div className="evolution-rail"><span>WELLNESS RESET · FICTIONAL EXAMPLE</span><span>0{index + 1} / 04</span></div>
+                      <div className="evolution-track-image"><img src={assetPath(slide.image)} alt={slide.alt} /></div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+              <div className="evolution-scene-glint" style={{ transform: `translateX(${sceneBuildProgress * 260 - 130}px)` }} />
+            </div>
+
+            <div key={active.phase} className="evolution-cinema-details">
+              <span className="evolution-phase">{active.phase}</span><h3>{active.title}</h3><p>{active.copy}</p>
+              <div className="evolution-detail-points"><span>Source stays visible</span><span>Format stays editable</span></div>
+              <div className="evolution-cinema-controls"><button type="button" aria-label="Previous campaign stage" onClick={() => goToSlide(Math.max(0, activeIndex - 1))}><ArrowLeft className="size-4" /></button><button type="button" aria-label="Next campaign stage" onClick={() => goToSlide(Math.min(CAMPAIGN_EVOLUTION.length - 1, activeIndex + 1))}><ArrowRight className="size-4" /></button></div>
+            </div>
+          </div>
+
+          <div className="evolution-cinema-foot"><span><Sparkles className="size-4" /> Fictional example · source stays visible while each format becomes editable.</span><a href={EXAMPLES_PATH}>Open the full sequence <ArrowUpRight className="size-4" /></a></div>
         </div>
-        <div className="evolution-thumbs" role="tablist" aria-label="Campaign evolution examples">
-          {CAMPAIGN_EVOLUTION.map((slide, index) => (
-            <button key={slide.phase} type="button" role="tab" aria-selected={activeIndex === index} className={cn("evolution-thumb", activeIndex === index && "is-active")} onClick={() => selectSlide(index)}>
-              <span className="evolution-thumb-image"><img src={assetPath(slide.image)} alt="" /></span><span className="evolution-thumb-copy"><small>0{index + 1}</small><strong>{slide.phase}</strong></span>
-            </button>
-          ))}
-        </div>
-        <div className="evolution-note"><Sparkles className="size-4" /> Fictional example · the studio keeps the campaign source visible while each format becomes editable.</div>
-        <a className="evolution-detail-link" href={EXAMPLES_PATH}>View the full campaign example <ArrowUpRight className="size-4" /></a>
-      </Reveal>
+      </div>
     </section>
   );
 }
