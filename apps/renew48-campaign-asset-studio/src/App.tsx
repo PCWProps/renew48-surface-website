@@ -69,7 +69,7 @@ function MarketingHome() {
       <main>
         <section className="marketing-hero">
           <div className="marketing-hero-copy">
-            <Reveal><div className="marketing-kicker">For Renew48 collective members</div><h1>One visual system.<br /><em>Everywhere it matters.</em></h1><p>Build your campaigns in one considered workspace while keeping your approved wordmarks, badges, typography, imagery, and brand details accurate in every format.</p><div className="marketing-actions"><a className="marketing-button primary" href={STUDIO_PATH}>Add the Campaign Studio <ArrowRight className="size-4" /></a><a className="marketing-text-link" href="#why">See how it works <ArrowRight className="size-4" /></a></div></Reveal>
+            <Reveal><div className="marketing-kicker">For Renew48 collective members</div><h1>One visual system.<br /><em>Everywhere it matters.</em></h1><p>Build your campaigns in one considered workspace. Keep your branding accurate with approved wordmarks, badges, typography, imagery, and brand details carried correctly into every format.</p><div className="marketing-actions"><a className="marketing-button primary" href={STUDIO_PATH}>Add the Campaign Studio <ArrowRight className="size-4" /></a><a className="marketing-text-link" href="#why">See how it works <ArrowRight className="size-4" /></a></div></Reveal>
           </div>
           <Reveal className="marketing-hero-art">
             <div className="hero-glow" /><div className="hero-orbit orbit-one" /><div className="hero-orbit orbit-two" />
