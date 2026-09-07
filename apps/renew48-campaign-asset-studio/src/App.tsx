@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, ArrowUpRight, BadgeCheck, Check, CircleHelp, KanbanSquare, Layers3, Library as LibraryIcon, LockKeyhole, LayoutDashboard, Package, PanelsTopLeft, RotateCcw, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight, BadgeCheck, Check, CircleHelp, Facebook, Instagram, KanbanSquare, Layers3, Library as LibraryIcon, Linkedin, LockKeyhole, LayoutDashboard, MessageCircle, Music2, Package, PanelsTopLeft, RotateCcw, Sparkles, Youtube } from "lucide-react";
 import { StudioProvider, useStudio } from "@/store/studio";
 import { BrandLogo } from "@/components/BrandLogo";
 import { cn } from "@/components/ui";
@@ -171,7 +171,8 @@ function CampaignEvolution() {
       <div className="evolution-cinema-sticky">
         <div className="evolution-cinema-shell">
           <div className="evolution-cinema-top">
-            <Reveal><div className="marketing-kicker">A campaign, in progress</div><h2 id="campaign-evolution-title">See the idea <em>take shape.</em></h2></Reveal>
+            <Reveal className="evolution-cinema-overline"><div className="marketing-kicker">A campaign, in progress</div></Reveal>
+            <Reveal className="evolution-cinema-title"><h2 id="campaign-evolution-title">See the idea <em>take shape.</em></h2></Reveal>
             <Reveal className="evolution-cinema-summary"><p>Start with one idea. Build the campaign around it, then carry it everywhere.</p><span className="evolution-cinema-meta">04 passes · one connected visual language</span><div className="evolution-cinema-progress"><span>Scroll to evolve</span><div className="evolution-progress-line"><i style={{ width: `${sceneProgress * 100}%` }} /></div><strong>{String(activeIndex + 1).padStart(2, "0")} / {String(CAMPAIGN_EVOLUTION.length).padStart(2, "0")}</strong></div></Reveal>
           </div>
 
@@ -237,10 +238,12 @@ function FeatureFlowRow({ feature, index }: { feature: typeof LANDING_FEATURES[n
       const rect = row.getBoundingClientRect();
       const travel = window.innerHeight + rect.height;
       const normalized = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / travel));
-      const nextProgress = normalized < .42
-        ? normalized / .42
-        : normalized > .7
-          ? (1 - normalized) / .3
+      const nextProgress = normalized < .14
+        ? 0
+        : normalized < .5
+          ? (normalized - .14) / .36
+          : normalized > .64
+            ? (1 - normalized) / .18
           : 1;
       const eased = 1 - Math.pow(1 - Math.max(0, Math.min(1, nextProgress)), 3);
       setFlowProgress((current) => Math.abs(current - eased) > .01 ? eased : current);
@@ -289,17 +292,18 @@ function MarketingHome() {
 
       <main>
         <section className="marketing-hero">
+          <div className="hero-social-cloud" aria-hidden="true"><Instagram /><Facebook /><Linkedin /><Youtube /><Music2 /><MessageCircle /></div>
           <div className="marketing-hero-copy">
-            <Reveal><div className="marketing-kicker">For Renew48 collective members</div><h1>One visual system.<br /><em>Everywhere it matters.</em></h1><div className="marketing-actions"><a className="marketing-button primary" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a><a className="marketing-text-link" href="#why">See how it works <ArrowRight className="size-4" /></a></div></Reveal>
+            <Reveal><div className="marketing-kicker">For Renew48 collective members</div><h1><span>One visual system.</span><em>Everywhere it matters.</em></h1><div className="marketing-actions"><a className="marketing-button primary" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a><a className="marketing-text-link" href="#why">See how it works <ArrowRight className="size-4" /></a></div></Reveal>
           </div>
           <Reveal className="marketing-hero-art">
             <div className="hero-glow" /><div className="hero-orbit orbit-one" /><div className="hero-orbit orbit-two" />
             <div className="hero-board-frame"><img src={assetPath("/assets/desert-sunrise-source.png")} alt="Desert sunrise visual reference" /><div className="hero-board-sheen" /></div>
-            <div className="hero-logo-card"><img src={assetPath("/assets/renew48-logo.png")} alt="Renew48" /></div>
-            <div className="hero-badge-card"><img src={assetPath("/assets/3db6b.png")} alt="Renew48 Wellness Collective badge" /></div>
-            <div className="hero-step-flow" aria-label="Campaign process"><span>Brief</span><i>→</i><span>Build</span><i>→</i><span>Review</span><i>→</i><span>Launch</span></div>
-            <div className="hero-caption"><span className="hero-caption-dot" /> Rooted in the desert · elevated by care</div>
+            <div className="hero-logo-mark"><img src={assetPath("/assets/renew48-logo.png")} alt="Renew48" /></div>
+            <div className="hero-badge-mark"><img src={assetPath("/assets/3db6b.png")} alt="Renew48 Wellness Collective badge" /></div>
+            <div className="hero-step-flow" aria-label="Campaign process"><span style={{ "--step-index": 0 } as React.CSSProperties}>Brief</span><span style={{ "--step-index": 1 } as React.CSSProperties}>Build</span><span style={{ "--step-index": 2 } as React.CSSProperties}>Review</span><span style={{ "--step-index": 3 } as React.CSSProperties}>Launch</span></div>
           </Reveal>
+          <div className="hero-divider"><i /><span><b /> Rooted in the desert · elevated by care</span><i /></div>
         </section>
 
         <section id="why" className="marketing-intro marketing-section">
