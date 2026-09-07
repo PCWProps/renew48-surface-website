@@ -25,7 +25,7 @@ const LANDING_FEATURES = [
   {
     number: "01",
     title: "Start with the brief",
-    copy: "Turn one campaign idea into a clear sequence of messages, channels, dates, and destinations before the first asset is made.",
+    copy: "Start with the idea. Turn it into a clear plan for what to say, where it goes, and when it goes live.",
     image: "/campaign-library/wellness-reset/wellness-reset-campaign-map.png",
     alt: "Wellness Reset fictional campaign planning board",
     icon: <Layers3 className="size-5" />,
@@ -33,7 +33,7 @@ const LANDING_FEATURES = [
   {
     number: "02",
     title: "Build from one system",
-    copy: "Keep each member’s approved wordmarks, badges, typography, palette, imagery, and visual language accurate across every format.",
+    copy: "Build campaigns that feel like you—and add something new to your brand.",
     image: "/campaign-library/wellness-reset/wellness-reset-content-suite.png",
     alt: "Wellness Reset fictional campaign content suite",
     icon: <Sparkles className="size-5" />,
@@ -41,7 +41,7 @@ const LANDING_FEATURES = [
   {
     number: "03",
     title: "Review, package, hand off",
-    copy: "Edit structured content, preview the real platform shape, move assets through approval, and export a clean campaign package.",
+    copy: "Edit each piece, check the final shape, and hand off a package ready to use.",
     image: "/campaign-library/wellness-reset/wellness-reset-social-system.png",
     alt: "Wellness Reset fictional social campaign system",
     icon: <BadgeCheck className="size-5" />,
@@ -51,29 +51,29 @@ const LANDING_FEATURES = [
 const CAMPAIGN_EVOLUTION = [
   {
     phase: "Direction",
-    title: "Find the shared promise",
-    copy: "The first board sets the emotional center: a warm desert world, a clear rhythm, and one useful promise for people finding their way back to balance.",
+    title: "Turn the idea into a system",
+    copy: "The first board turns your idea into a complete campaign system.",
     image: "/campaign-library/wellness-reset/wellness-reset-campaign-map.png",
     alt: "Wellness Reset fictional campaign evolution map",
   },
   {
     phase: "Refinement",
-    title: "Shape the sequence",
-    copy: "The next pass turns the idea into a calm email journey, giving every message a job while the visual language remains recognizably related.",
+    title: "Shape it into a story",
+    copy: "Give every message a job. Let the story build.",
     image: "/campaign-library/wellness-reset/wellness-reset-email-sequence.png",
     alt: "Wellness Reset fictional email sequence board",
   },
   {
     phase: "Translation",
-    title: "Carry it into social",
-    copy: "The campaign becomes a family of feed posts, stories, and reels without losing its typography, photography cues, or restorative point of view.",
+    title: "Keep every channel connected",
+    copy: "One clear message, shaped for every platform.",
     image: "/campaign-library/wellness-reset/wellness-reset-social-system.png",
     alt: "Wellness Reset fictional social campaign system board",
   },
   {
     phase: "System",
-    title: "Make every format feel related",
-    copy: "The final system gives each platform its own shape while the campaign still reads as one considered body of work.",
+    title: "Ready for every place you post",
+    copy: "Get each asset sized and ready for wherever you post.",
     image: "/campaign-library/wellness-reset/wellness-reset-content-suite.png",
     alt: "Wellness Reset fictional web and content suite board",
   },
@@ -172,7 +172,7 @@ function CampaignEvolution() {
         <div className="evolution-cinema-shell">
           <div className="evolution-cinema-top">
             <Reveal><div className="marketing-kicker">A campaign, in progress</div><h2 id="campaign-evolution-title">See the idea <em>take shape.</em></h2></Reveal>
-            <Reveal className="evolution-cinema-summary"><p>Good campaign work is iterative. This fictional Wellness Reset example moves from the first direction through email, social, and web, so members can see how one source of truth becomes a complete month of communication.</p><span className="evolution-cinema-meta">04 passes · one connected visual language</span><div className="evolution-cinema-progress"><span>Scroll to evolve</span><div className="evolution-progress-line"><i style={{ width: `${sceneProgress * 100}%` }} /></div><strong>{String(activeIndex + 1).padStart(2, "0")} / {String(CAMPAIGN_EVOLUTION.length).padStart(2, "0")}</strong></div></Reveal>
+            <Reveal className="evolution-cinema-summary"><p>Start with one idea. Build the campaign around it, then carry it everywhere.</p><span className="evolution-cinema-meta">04 passes · one connected visual language</span><div className="evolution-cinema-progress"><span>Scroll to evolve</span><div className="evolution-progress-line"><i style={{ width: `${sceneProgress * 100}%` }} /></div><strong>{String(activeIndex + 1).padStart(2, "0")} / {String(CAMPAIGN_EVOLUTION.length).padStart(2, "0")}</strong></div></Reveal>
           </div>
 
           <div className="evolution-cinema-body">
@@ -187,8 +187,8 @@ function CampaignEvolution() {
             <div className="evolution-scene-stage" style={{ opacity: .98 + sceneBuildProgress * .02 }}>
               <div className="evolution-scene-orbit orbit-one" />
               <div className="evolution-scene-orbit orbit-two" />
-              <div className="evolution-scene-token scene-token-source" style={{ transform: `translate3d(${sceneBuildProgress * -8}px, ${sceneBuildProgress * 16}px, 0)` }}><span>01</span><strong>Source board</strong><small>Direction stays visible</small></div>
-              <div className="evolution-scene-token scene-token-system" style={{ transform: `translate3d(${sceneBuildProgress * 13}px, ${sceneBuildProgress * -15}px, 0)` }}><span>04</span><strong>Working system</strong><small>Every format stays related</small></div>
+              <div className="evolution-scene-token scene-token-source" style={{ transform: `translate3d(${sceneBuildProgress * -8}px, ${sceneBuildProgress * 16}px, 0)` }}><span><PanelsTopLeft className="size-3.5" /></span><strong>Source board</strong><small>Direction stays visible</small></div>
+              <div className="evolution-scene-token scene-token-system" style={{ transform: `translate3d(${sceneBuildProgress * 13}px, ${sceneBuildProgress * -15}px, 0)` }}><span><Layers3 className="size-3.5" /></span><strong>Working system</strong><small>Every format stays related</small></div>
               <div ref={trackWindowRef} className="evolution-track-window">
                 <div ref={trackRef} className="evolution-track" style={{ transform: `translate3d(-${sceneProgress * trackTravel}px, 0, 0)` }}>
                   {CAMPAIGN_EVOLUTION.map((slide, index) => (
@@ -219,7 +219,7 @@ function CampaignEvolution() {
 function FeatureFlowRow({ feature, index }: { feature: typeof LANDING_FEATURES[number]; index: number }) {
   const rowRef = useRef<HTMLDivElement | null>(null);
   const [flowProgress, setFlowProgress] = useState(0);
-  const copyDirection = index % 2 === 0 ? -1 : 1;
+  const copyDirection = index % 2 === 0 ? 1 : -1;
   const shotDirection = copyDirection * -1;
   const shotRotation = index % 2 === 0 ? 1.5 : -1.5;
 
@@ -290,20 +290,21 @@ function MarketingHome() {
       <main>
         <section className="marketing-hero">
           <div className="marketing-hero-copy">
-            <Reveal><div className="marketing-kicker">For Renew48 collective members</div><h1>One visual system.<br /><em>Everywhere it matters.</em></h1><p>Build your campaigns in one considered workspace. Keep your branding accurate with approved wordmarks, badges, typography, imagery, and brand details carried correctly into every format.</p><div className="marketing-actions"><a className="marketing-button primary" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a><a className="marketing-text-link" href="#why">See how it works <ArrowRight className="size-4" /></a></div></Reveal>
+            <Reveal><div className="marketing-kicker">For Renew48 collective members</div><h1>One visual system.<br /><em>Everywhere it matters.</em></h1><div className="marketing-actions"><a className="marketing-button primary" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a><a className="marketing-text-link" href="#why">See how it works <ArrowRight className="size-4" /></a></div></Reveal>
           </div>
           <Reveal className="marketing-hero-art">
             <div className="hero-glow" /><div className="hero-orbit orbit-one" /><div className="hero-orbit orbit-two" />
             <div className="hero-board-frame"><img src={assetPath("/assets/desert-sunrise-source.png")} alt="Desert sunrise visual reference" /><div className="hero-board-sheen" /></div>
             <div className="hero-logo-card"><img src={assetPath("/assets/renew48-logo.png")} alt="Renew48" /></div>
             <div className="hero-badge-card"><img src={assetPath("/assets/3db6b.png")} alt="Renew48 Wellness Collective badge" /></div>
+            <div className="hero-step-flow" aria-label="Campaign process"><span>Brief</span><i>→</i><span>Build</span><i>→</i><span>Review</span><i>→</i><span>Launch</span></div>
             <div className="hero-caption"><span className="hero-caption-dot" /> Rooted in the desert · elevated by care</div>
           </Reveal>
         </section>
 
         <section id="why" className="marketing-intro marketing-section">
           <Reveal className="section-heading"><div className="marketing-kicker">The working surface</div><h2>Less hunting.<br /><em>More making.</em></h2></Reveal>
-          <Reveal className="section-heading-copy"><p>The studio is designed for the moment a member campaign moves from an idea to a coordinated month of work. Keep the source of truth visible, make the content editable, and make the handoff easy to trust.</p><div className="stat-line"><span>01</span><span>Brief to launch</span><span>One connected flow</span></div></Reveal>
+          <Reveal className="section-heading-copy"><p>Start with the idea. Keep the work connected through launch. The source stays visible, the content stays editable, and the handoff stays clear.</p><div className="stat-line"><span>01</span><span>Brief to launch</span><span>One connected flow</span></div></Reveal>
         </section>
 
         <CampaignEvolution />
@@ -312,7 +313,7 @@ function MarketingHome() {
           {LANDING_FEATURES.map((feature, index) => <FeatureFlowRow key={feature.number} feature={feature} index={index} />)}
         </section>
 
-        <section id="system" className="marketing-system-band marketing-section"><Reveal className="system-band-copy"><div className="marketing-kicker">The same care, in every format</div><h2>From the first board<br /><em>to the final handoff.</em></h2><p>Campaign references stay references. Approved logos, badges, photos, and type stay selectable sources. The studio keeps those boundaries clear while you build.</p><div className="system-band-actions"><a className="marketing-button light" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a><a className="marketing-text-link light-link" href={EXAMPLES_PATH}>See the example set <ArrowUpRight className="size-4" /></a></div></Reveal><Reveal className="system-collage"><div className="collage-card collage-large"><img src={assetPath("/campaign-library/wellness-reset/wellness-reset-content-suite.png")} alt="Wellness Reset fictional campaign content suite" /></div><div className="collage-card collage-small"><img src={assetPath("/assets/renew48-logo.png")} alt="Renew48 logo source" /></div><div className="collage-note"><Check className="size-4" /> Fictional reference set</div></Reveal></section>
+        <section id="system" className="marketing-system-band marketing-section"><Reveal className="system-band-copy"><div className="marketing-kicker">The same care, in every format</div><h2>From the first board<br /><em>to the final handoff.</em></h2><p>Keep your assets together. Keep the message clear. Get every format ready to use.</p><div className="system-band-actions"><a className="marketing-button light" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a><a className="marketing-text-link light-link" href={EXAMPLES_PATH}>See the example set <ArrowUpRight className="size-4" /></a></div></Reveal><Reveal className="system-collage"><div className="collage-card collage-large"><img src={assetPath("/campaign-library/wellness-reset/wellness-reset-content-suite.png")} alt="Wellness Reset fictional campaign content suite" /></div><div className="collage-card collage-small"><img src={assetPath("/assets/renew48-logo.png")} alt="Renew48 logo source" /></div><div className="collage-note"><Check className="size-4" /> Fictional reference set</div></Reveal></section>
 
         <section id="access" className="marketing-final-cta marketing-section"><Reveal><LockKeyhole className="mx-auto mb-5 size-7 text-terracotta" /><div className="marketing-kicker">Private by design</div><h2>The public story stays open.<br /><em>The working studio stays yours.</em></h2><p>Campaign work is served behind the existing PCWProps Cloudflare Access policy for the protected `/marketing-studio/studio/` route.</p><a className="marketing-button primary" href={ADDON_PATH}>Get the Studio <ArrowRight className="size-4" /></a></Reveal></section>
       </main>
