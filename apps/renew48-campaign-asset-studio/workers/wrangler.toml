@@ -1,0 +1,3 @@
+name = "renew48-marketing-studio-router"
+main = "marketing-studio-router.ts"
+compatibility_date = "2026-09-07"

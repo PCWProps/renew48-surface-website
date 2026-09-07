@@ -6,7 +6,9 @@ import path from "node:path";
 // Standalone Vite configuration. The app no longer requires Figma Make's
 // preview plugins, runtime, or deployment CLI.
 export default defineConfig(({ mode }) => ({
-  base: process.env.VITE_BASE_PATH ?? "/",
+  // The production app is mounted below the existing apps.renew48.com root.
+  // Keep an override for local root previews and other deployment surfaces.
+  base: process.env.VITE_BASE_PATH ?? "/marketing-studio/",
   build: {
     sourcemap: mode === "development",
     minify: mode !== "development",

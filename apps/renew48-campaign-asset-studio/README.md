@@ -29,11 +29,13 @@ This project is static Vite output and includes `wrangler.toml` for Cloudflare P
 - Build command: `npm run build`
 - Build output directory: `dist`
 
+The production bundle is mounted below `/marketing-studio/`, so asset URLs and the public entry path stay isolated from the existing `apps.renew48.com` root application. For a local root preview, use `VITE_BASE_PATH=/ npm run dev`.
+
 Or deploy a validated build with `npx wrangler pages deploy dist --project-name renew48-marketing-suite` from this directory after authenticating Wrangler. Account, domain, and production publish settings are intentionally managed in Cloudflare rather than committed here.
 
 ## Routes and access boundary
 
-- `/` is the public marketing overview.
-- `/marketing-suite/` is the private studio entry route.
+- `/marketing-studio/` is the public marketing overview.
+- `/marketing-studio/studio/` is the private studio entry route.
 
-Cloudflare Access is the security boundary for the studio route. The account's existing `Renew48 Marketing Suite` Access application covers `app.renew48.com/marketing-suite/*`; the in-app entry screen is only a user-facing handoff after the edge policy, not a replacement for authentication.
+Cloudflare Access is the security boundary for the studio route. The public overview is served at `apps.renew48.com/marketing-studio/`; the private `/marketing-studio/studio/` path is routed through the existing PCWProps Access policy. The in-app entry screen is only a user-facing handoff after the edge policy, not a replacement for authentication.

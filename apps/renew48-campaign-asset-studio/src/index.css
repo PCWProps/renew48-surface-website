@@ -148,7 +148,7 @@ body {
 .marketing-button:hover, .marketing-nav-cta:hover, .marketing-text-link:hover { transform: translateY(-3px); }
 .marketing-button:hover, .marketing-nav-cta:hover { box-shadow: 0 16px 32px color-mix(in srgb, var(--marketing-forest) 25%, transparent); }
 .marketing-hero { position: relative; display: grid; grid-template-columns: minmax(0, .92fr) minmax(420px, 1.08fr); align-items: center; gap: 6vw; min-height: 700px; padding: 70px 8vw 100px; }
-.marketing-hero::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, var(--marketing-sand) 0%, color-mix(in srgb, var(--marketing-sand) 88%, transparent) 43%, transparent 78%), url('/assets/desert-sunrise-source.png') 72% 40% / cover no-repeat; opacity: .46; mask-image: linear-gradient(90deg, #000 10%, #000 46%, transparent 94%); }
+.marketing-hero::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, var(--marketing-sand) 0%, color-mix(in srgb, var(--marketing-sand) 88%, transparent) 43%, transparent 78%), url('/marketing-studio/assets/desert-sunrise-source.png') 72% 40% / cover no-repeat; opacity: .46; mask-image: linear-gradient(90deg, #000 10%, #000 46%, transparent 94%); }
 .marketing-hero-copy, .marketing-hero-art { position: relative; z-index: 1; }
 .marketing-hero-copy { max-width: 600px; }
 .marketing-kicker { color: var(--marketing-clay); font: 11px/1.2 var(--font-mono); letter-spacing: .22em; text-transform: uppercase; }
@@ -165,8 +165,8 @@ body {
 .hero-board-frame img { display: block; width: 100%; aspect-ratio: 1.5; object-fit: cover; }
 .hero-board-sheen, .shot-glass { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, #fff9 0 8%, transparent 22% 68%, #ffffff26 82%, transparent 95%); mix-blend-mode: screen; }
 .hero-logo-card, .hero-badge-card { position: absolute; display: grid; place-items: center; border: 1px solid #fff8; background: color-mix(in srgb, var(--marketing-ivory) 90%, transparent); box-shadow: 0 18px 35px #18382e30; backdrop-filter: blur(10px); }
-.hero-logo-card { left: 1%; bottom: 17%; width: 180px; height: 112px; padding: 15px; border-radius: 16px; transform: rotate(-8deg); }
-.hero-logo-card img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.hero-logo-card { left: 1%; bottom: 17%; width: 164px; height: 164px; padding: 22px; border-radius: 18px; overflow: hidden; transform: rotate(-8deg); }
+.hero-logo-card img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; transform: rotate(8deg); }
 .hero-badge-card { right: 0; bottom: 2%; width: 126px; height: 126px; padding: 13px; border-radius: 50%; transform: rotate(11deg); }
 .hero-badge-card img { width: 100%; height: 100%; object-fit: contain; }
 .hero-caption { position: absolute; right: 19%; bottom: 0; display: flex; align-items: center; gap: 8px; color: color-mix(in srgb, var(--marketing-forest) 72%, transparent); font: 10px/1.2 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
@@ -240,7 +240,7 @@ body {
   .marketing-hero-copy p { font-size: 16px; }
   .marketing-hero-art { min-height: 365px; }
   .hero-board-frame { right: 2%; width: 78%; }
-  .hero-logo-card { left: 0; bottom: 12%; width: 145px; height: 90px; }
+  .hero-logo-card { left: 0; bottom: 12%; width: 132px; height: 132px; padding: 17px; }
   .hero-badge-card { width: 96px; height: 96px; }
   .hero-caption { right: 0; font-size: 8px; }
   .marketing-intro, .marketing-feature-stack { padding: 90px 0; }
