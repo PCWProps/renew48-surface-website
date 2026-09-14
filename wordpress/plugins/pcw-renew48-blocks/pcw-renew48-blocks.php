@@ -2,7 +2,7 @@
 /**
  * Plugin Name: PCW Renew48 Blocks
  * Description: Shared, privacy-safe Gutenberg block system for Renew48, ChiroGoAZ, and AromaHMT.
- * Version: 0.5.0
+ * Version: 0.5.1
  * Requires at least: 6.5
  * Requires PHP: 8.1
  * Text Domain: pcw-renew48
@@ -11,7 +11,7 @@
 defined('ABSPATH') || exit;
 
 final class PCW_Renew48_Blocks {
-    private const VERSION = '0.5.0';
+    private const VERSION = '0.5.1';
     private const UNLEASHED_MIGRATION = 'pcw_renew48_unleashed_standard_blocks_040';
     private const CACHE_GROUP = 'pcw_renew48_public';
 
@@ -34,6 +34,7 @@ final class PCW_Renew48_Blocks {
         add_action('init', array(__CLASS__, 'register_patterns'));
         add_action('rest_api_init', array(__CLASS__, 'register_rest'));
         add_action('admin_init', array(__CLASS__, 'migrate_unleashed_page'));
+        add_action('wp_enqueue_scripts', array(__CLASS__, 'enqueue_public_assets'));
     }
 
     public static function register(): void {
@@ -61,6 +62,11 @@ final class PCW_Renew48_Blocks {
                 'supports' => array('anchor' => true, 'align' => array('wide', 'full'), 'html' => false, 'color' => array('text' => true, 'background' => true)),
             ));
         }
+    }
+
+    public static function enqueue_public_assets(): void {
+        wp_enqueue_style('pcw-renew48-unleashed-standard');
+        wp_enqueue_script('pcw-renew48-blocks-view');
     }
 
     private static function attributes(string $slug): array {
@@ -227,7 +233,7 @@ final class PCW_Renew48_Blocks {
      * content is never overwritten; when no legacy page exists a draft is made.
      */
     public static function migrate_unleashed_page(): void {
-        if (get_option(self::UNLEASHED_MIGRATION) === self::VERSION) return;
+        if (get_option(self::UNLEASHED_MIGRATION)) return;
         if (!current_user_can('edit_pages')) return;
 
         $legacy = get_posts(array(
