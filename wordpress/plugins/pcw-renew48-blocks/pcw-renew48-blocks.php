@@ -2,7 +2,7 @@
 /**
  * Plugin Name: PCW Renew48 Blocks
  * Description: Shared, privacy-safe Gutenberg block system for Renew48, ChiroGoAZ, and AromaHMT.
- * Version: 0.5.1
+ * Version: 0.6.0
  * Requires at least: 6.5
  * Requires PHP: 8.1
  * Text Domain: pcw-renew48
@@ -11,7 +11,7 @@
 defined('ABSPATH') || exit;
 
 final class PCW_Renew48_Blocks {
-    private const VERSION = '0.5.1';
+    private const VERSION = '0.6.0';
     private const UNLEASHED_MIGRATION = 'pcw_renew48_unleashed_standard_blocks_040';
     private const CACHE_GROUP = 'pcw_renew48_public';
 
@@ -26,7 +26,11 @@ final class PCW_Renew48_Blocks {
         'header-cta', 'footer-columns', 'navigation-panel', 'breadcrumbs', 'alert-banner',
         'cinematic-hero', 'immersive-service-galaxy', 'service-galaxy-card', 'wellness-path-development',
         'committed-wellness-flow', 'referral-program-flow', 'funnel-flow', 'funnel-choice', 'conversion-carousel',
-        'carousel-slide', 'modal-trigger', 'privacy-handoff', 'unleashed-article',
+        'carousel-slide', 'modal-trigger', 'privacy-handoff',
+        'collective-header', 'mobile-menu-drawer', 'collective-footer', 'brand-directory', 'directory-filter',
+        'service-masonry', 'service-detail-panel', 'benefit-strip', 'promo-banner', 'location-hours', 'pricing-grid',
+        'gallery-lightbox', 'tabbed-content', 'newsletter-capture', 'social-proof-strip', 'booking-handoff',
+        'commerce-handoff', 'toast-notice', 'back-to-top', 'contract-suite', 'unleashed-article',
     );
 
     public static function boot(): void {
@@ -45,10 +49,12 @@ final class PCW_Renew48_Blocks {
         wp_register_style('pcw-renew48-approved-artwork', plugins_url('assets/approved-artwork.css', __FILE__), array('pcw-renew48-unleashed'), self::VERSION);
         wp_register_style('pcw-renew48-unleashed-layered', plugins_url('assets/unleashed-layered.css', __FILE__), array('pcw-renew48-approved-artwork'), self::VERSION);
         wp_register_style('pcw-renew48-unleashed-standard', plugins_url('assets/unleashed-standard.css', __FILE__), array(), self::VERSION);
+        wp_register_style('pcw-renew48-ui-kit', plugins_url('assets/ui-kit.css', __FILE__), array('pcw-renew48-blocks'), self::VERSION);
         wp_enqueue_style('pcw-renew48-unleashed');
         wp_enqueue_style('pcw-renew48-approved-artwork');
         wp_enqueue_style('pcw-renew48-unleashed-layered');
         wp_enqueue_style('pcw-renew48-unleashed-standard');
+        wp_enqueue_style('pcw-renew48-ui-kit');
 
         foreach (self::BLOCKS as $slug) {
             register_block_type('renew48/' . $slug, array(
@@ -66,6 +72,7 @@ final class PCW_Renew48_Blocks {
 
     public static function enqueue_public_assets(): void {
         wp_enqueue_style('pcw-renew48-unleashed-standard');
+        wp_enqueue_style('pcw-renew48-ui-kit');
         wp_enqueue_script('pcw-renew48-blocks-view');
     }
 
@@ -83,6 +90,9 @@ final class PCW_Renew48_Blocks {
             'mediaUrl' => array('type' => 'string', 'default' => ''),
             'mediaAlt' => array('type' => 'string', 'default' => ''),
             'interaction' => array('type' => 'string', 'default' => 'reveal'),
+            'funnelId' => array('type' => 'string', 'default' => ''),
+            'handoff' => array('type' => 'string', 'default' => ''),
+            'formAction' => array('type' => 'string', 'default' => ''),
             'items' => array('type' => 'array', 'default' => array()),
             'level' => array('type' => 'integer', 'default' => 2),
         );
@@ -103,17 +113,40 @@ final class PCW_Renew48_Blocks {
         $classes = array('pcw-r48-block', 'pcw-r48-' . sanitize_html_class($slug), 'is-variant-' . sanitize_html_class((string) ($attributes['variant'] ?? 'default')), 'is-theme-' . sanitize_html_class((string) ($attributes['theme'] ?? 'cobranded')));
         $is_reveal = in_array($slug, array('scroll-reveal', 'hero-primary', 'hero-split', 'cta-banner', 'cinematic-hero', 'immersive-service-galaxy', 'wellness-path-development', 'committed-wellness-flow', 'referral-program-flow', 'funnel-flow'), true);
         $is_carousel = in_array($slug, array('testimonial-slider', 'conversion-carousel'), true);
-        $attrs = get_block_wrapper_attributes(array('class' => implode(' ', $classes), 'data-pcw-reveal' => $is_reveal ? 'true' : null, 'data-pcw-carousel' => $is_carousel ? 'true' : null, 'data-pcw-modal' => $slug === 'modal-trigger' ? 'true' : null, 'data-pcw-interaction' => sanitize_key((string) ($attributes['interaction'] ?? 'reveal'))));
+        $funnel_id = sanitize_key((string) ($attributes['funnelId'] ?? self::funnel_id_for_slug($slug)));
+        $attrs = get_block_wrapper_attributes(array('class' => implode(' ', $classes), 'data-pcw-reveal' => $is_reveal ? 'true' : null, 'data-pcw-carousel' => $is_carousel ? 'true' : null, 'data-pcw-modal' => $slug === 'modal-trigger' ? 'true' : null, 'data-funnel' => $funnel_id ?: null, 'data-pcw-interaction' => sanitize_key((string) ($attributes['interaction'] ?? 'reveal'))));
         $heading = min(6, max(2, (int) ($attributes['level'] ?? 2)));
+        $component = self::render_ui_component($slug, $attributes, $attrs, $title, $body, $heading, $funnel_id);
+        if ($component !== '') return $component;
         $out = '<' . $tag . ' ' . $attrs . '>';
         if (!empty($attributes['mediaUrl'])) $out .= '<figure class="pcw-r48-media"><img src="' . esc_url($attributes['mediaUrl']) . '" alt="' . esc_attr((string) ($attributes['mediaAlt'] ?? '')) . '" loading="lazy" decoding="async"></figure>';
         if (!empty($attributes['eyebrow'])) $out .= '<p class="pcw-r48-eyebrow">' . esc_html($attributes['eyebrow']) . '</p>';
         if ($title !== '') $out .= '<h' . $heading . '>' . esc_html($title) . '</h' . $heading . '>';
         if ($body !== '') $out .= '<div class="pcw-r48-body">' . wp_kses_post(wpautop($body)) . '</div>';
         $out .= self::render_items($attributes['items'] ?? array(), $slug);
-        if (!empty($attributes['ctaLabel']) && !empty($attributes['ctaUrl'])) $out .= '<a class="pcw-r48-cta" href="' . esc_url($attributes['ctaUrl']) . '"' . ($slug === 'privacy-handoff' ? ' rel="noopener" target="_blank"' : '') . '>' . esc_html($attributes['ctaLabel']) . '</a>';
+        $cta_url = trim((string) ($attributes['ctaUrl'] ?? '')) ?: self::handoff_url((string) ($attributes['handoff'] ?? ''), $funnel_id);
+        if (!empty($attributes['ctaLabel']) && $cta_url !== '') $out .= '<a class="pcw-r48-cta" href="' . esc_url($cta_url) . '"' . (in_array($slug, array('privacy-handoff', 'booking-handoff', 'commerce-handoff'), true) ? ' rel="noopener" target="_blank"' : '') . '>' . esc_html($attributes['ctaLabel']) . '</a>';
         if ($content !== '') $out .= '<div class="pcw-r48-inner">' . $content . '</div>';
         return $out . '</' . $tag . '>';
+    }
+
+    private static function render_ui_component(string $slug, array $attributes, string $attrs, string $title, string $body, int $heading, string $funnel_id): string {
+        $cta = trim((string) ($attributes['ctaUrl'] ?? '')) ?: self::handoff_url((string) ($attributes['handoff'] ?? ''), $funnel_id);
+        $cta_markup = !empty($attributes['ctaLabel']) && $cta !== '' ? '<a class="pcw-r48-cta" href="' . esc_url($cta) . '">' . esc_html($attributes['ctaLabel']) . '</a>' : '';
+        $items = self::render_items($attributes['items'] ?? array(), $slug);
+        $heading_markup = $title !== '' ? '<h' . $heading . '>' . esc_html($title) . '</h' . $heading . '>' : '';
+        $body_markup = $body !== '' ? '<div class="pcw-r48-body">' . wp_kses_post(wpautop($body)) . '</div>' : '';
+        if ($slug === 'collective-header') return '<header ' . $attrs . '><div><p class="pcw-r48-eyebrow">' . esc_html((string) ($attributes['eyebrow'] ?? 'Renew48 Wellness Collective')) . '</p>' . $heading_markup . '</div><nav aria-label="Collective navigation"><a href="' . esc_url(home_url('/our-brands/')) . '">Our brands</a><a href="' . esc_url(home_url('/wellness/')) . '">Wellness</a><a href="' . esc_url(home_url('/resources/')) . '">Resources</a><a href="' . esc_url(home_url('/contact/')) . '">Contact</a></nav>' . $cta_markup . '</header>';
+        if ($slug === 'mobile-menu-drawer') return '<aside ' . $attrs . ' data-pcw-drawer><button type="button" data-pcw-drawer-toggle aria-expanded="false">Menu</button><nav hidden aria-label="Mobile navigation"><a href="' . esc_url(home_url('/')) . '">Home</a><a href="' . esc_url(home_url('/our-brands/')) . '">Our brands</a><a href="' . esc_url(home_url('/wellness/')) . '">Wellness</a><a href="' . esc_url(home_url('/contact/')) . '">Contact</a>' . $cta_markup . '</nav></aside>';
+        if ($slug === 'collective-footer') return '<footer ' . $attrs . '><div>' . $heading_markup . $body_markup . '</div><nav aria-label="Footer"><a href="' . esc_url(home_url('/privacy-policy/')) . '">Privacy</a><a href="' . esc_url(home_url('/terms/')) . '">Terms</a><a href="' . esc_url(home_url('/accessibility/')) . '">Accessibility</a></nav></footer>';
+        if ($slug === 'directory-filter') return '<section ' . $attrs . '>' . $heading_markup . $body_markup . '<form class="pcw-r48-filter-form" data-pcw-directory-filter><label>Search brands and services<input type="search" name="q" autocomplete="off"></label><select name="service"><option value="">All services</option><option>Chiropractic</option><option>Massage therapy</option><option>Wellness</option></select><select name="location"><option value="">All locations</option><option>Phoenix, AZ</option></select><button type="submit">Filter</button></form></section>';
+        if ($slug === 'newsletter-capture') return '<section ' . $attrs . '>' . $heading_markup . $body_markup . '<form class="pcw-r48-newsletter" action="' . esc_url((string) ($attributes['formAction'] ?? '')) . '" method="post" data-pcw-newsletter><label>Email address<input type="email" name="email" required autocomplete="email"></label><button type="submit">Subscribe</button><p class="pcw-r48-form-status" aria-live="polite">Consent-based updates only.</p></form></section>';
+        if ($slug === 'location-hours') return '<section ' . $attrs . '>' . $heading_markup . $body_markup . '<div class="pcw-r48-location-meta"><strong>Location</strong><span>Update address, phone, and hours in the block content.</span><a href="' . esc_url(home_url('/contact/')) . '">Contact the team</a></div></section>';
+        if ($slug === 'gallery-lightbox') return '<section ' . $attrs . '>' . $heading_markup . $body_markup . '<div class="pcw-r48-gallery" data-pcw-gallery>' . $items . '</div></section>';
+        if ($slug === 'tabbed-content') return '<section ' . $attrs . '>' . $heading_markup . '<div class="pcw-r48-tabs" data-pcw-tabs>' . $items . '</div></section>';
+        if ($slug === 'toast-notice') return '<aside ' . $attrs . ' role="status">' . $heading_markup . $body_markup . '</aside>';
+        if ($slug === 'back-to-top') return '<div ' . $attrs . '><a class="pcw-r48-cta" href="#top">Back to top</a></div>';
+        return '';
     }
 
     private static function render_unleashed_article(array $attributes): string {
@@ -163,6 +196,8 @@ final class PCW_Renew48_Blocks {
             'committed-wellness' => 'Committed Wellness Flow', 'referral-program' => 'Referral Program Flow', 'corporate-wellness' => 'Corporate, Event & Sports Funnel',
             'contract-savings' => 'Annual Contract Savings Funnel', 'path-quiz' => 'Wellness Path Quiz Funnel', 'walk-in-waitlist' => 'Walk-in & Waitlist Funnel',
             'gift-cards' => 'Gift Cards Funnel', 'seasonal-wellness' => 'Seasonal Wellness Funnel', 'reviews' => 'Reviews & Reputation Funnel', 'insurance-packages-draft' => 'Insurance Packages Draft Funnel',
+            'collective-home-ui' => 'Collective Home UI', 'member-services-ui' => 'Member Services UI', 'member-service-detail-ui' => 'Member Service Detail UI',
+            'find-care-ui' => 'Find Care Directory UI', 'member-footer-ui' => 'Member Footer UI', 'contract-suite-ui' => 'Contract Suite UI',
             'about' => 'About Page', 'contact' => 'Contact Page', 'blog-archive' => 'Blog Archive', 'blog-single' => 'Blog Single', 'faq' => 'FAQ Page',
             'header-cobranded' => 'CoBranded Header', 'header-chiro' => 'ChiroGoAZ Header', 'header-aroma' => 'AromaHMT Header',
             'footer-cobranded' => 'CoBranded Footer', 'footer-chiro' => 'ChiroGoAZ Footer', 'footer-aroma' => 'AromaHMT Footer', 'booking-privacy-modal' => 'Booking Privacy Modal',
@@ -173,13 +208,19 @@ final class PCW_Renew48_Blocks {
     }
 
     private static function pattern_content(string $slug): string {
-        if (str_starts_with($slug, 'header-')) return '<!-- wp:renew48/navigation-panel {"title":"' . esc_attr($slug === 'header-chiro' ? 'ChiroGoAZ' : ($slug === 'header-aroma' ? 'AromaHMT' : 'Renew48')) . '","eyebrow":"Desert Wellness","ctaLabel":"' . esc_attr($slug === 'header-chiro' ? 'Book Chiropractic Evaluation' : ($slug === 'header-aroma' ? 'Book Massage' : 'Book Now')) . '"} /-->';
+        if (str_starts_with($slug, 'header-')) return '<!-- wp:renew48/collective-header {"title":"' . esc_attr($slug === 'header-chiro' ? 'ChiroGoAZ' : ($slug === 'header-aroma' ? 'AromaHMT' : 'Renew48')) . '","eyebrow":"Desert Wellness","ctaLabel":"' . esc_attr($slug === 'header-chiro' ? 'Book Chiropractic Evaluation' : ($slug === 'header-aroma' ? 'Book Massage' : 'Book Now')) . '","handoff":"booking","theme":"' . esc_attr($slug === 'header-chiro' ? 'chiro' : ($slug === 'header-aroma' ? 'aroma' : 'cobranded')) . '"} /-->';
         if (str_starts_with($slug, 'footer-')) return '<!-- wp:renew48/footer-columns {"title":"' . esc_attr($slug === 'footer-chiro' ? 'ChiroGoAZ' : ($slug === 'footer-aroma' ? 'AromaHMT' : 'Renew48')) . '","body":"Services · Memberships · Booking · Shop · Blog · Legal"} /-->';
-        if ($slug === 'booking-privacy-modal') return '<!-- wp:renew48/navigation-panel {"title":"Booking stays secure","body":"Continue to the approved Jane booking experience. Do not include clinical details in this site.","ctaLabel":"Continue to booking"} /-->';
+        if ($slug === 'booking-privacy-modal') return '<!-- wp:renew48/privacy-handoff {"title":"Booking stays secure","body":"Continue to the approved Jane booking experience. Do not include clinical details in this site.","ctaLabel":"Continue to booking","handoff":"booking","funnelId":"booking"} /-->';
         if ($slug === 'blog-single') return self::unleashed_standard_content();
         $funnel_patterns = array('corporate-wellness', 'contract-savings', 'path-quiz', 'walk-in-waitlist', 'gift-cards', 'seasonal-wellness', 'reviews', 'insurance-packages-draft');
         if (in_array($slug, $funnel_patterns, true)) return self::funnel_pattern_content($slug);
         if ($slug === 'referral-program') return self::referral_pattern_content();
+        if ($slug === 'collective-home-ui') return self::collective_home_ui_content();
+        if ($slug === 'member-services-ui') return self::member_services_ui_content();
+        if ($slug === 'member-service-detail-ui') return self::member_service_detail_ui_content();
+        if ($slug === 'find-care-ui') return self::find_care_ui_content();
+        if ($slug === 'member-footer-ui') return self::member_footer_ui_content();
+        if ($slug === 'contract-suite-ui') return self::contract_suite_ui_content();
         if ($slug === 'committed-wellness') return self::committed_wellness_content();
         if ($slug === 'chiropractic-services' || $slug === 'massage-services') return self::service_galaxy_content($slug);
         if ($slug === 'service-detail-flow') return self::service_detail_content();
@@ -188,6 +229,20 @@ final class PCW_Renew48_Blocks {
     }
 
     private static function label(string $slug): string { return ucwords(str_replace('-', ' ', $slug)); }
+
+    private static function funnel_id_for_slug(string $slug): string {
+        $map = array('referral-program-flow' => 'referral', 'funnel-flow' => 'campaign', 'booking-handoff' => 'booking', 'commerce-handoff' => 'commerce', 'privacy-handoff' => 'booking', 'contract-suite' => 'contract-suite');
+        return $map[$slug] ?? '';
+    }
+
+    /** Routes are configurable site options; defaults only target public local pages. */
+    private static function handoff_url(string $handoff, string $funnel_id): string {
+        $key = sanitize_key($handoff ?: $funnel_id);
+        $routes = (array) get_option('pcw_renew48_funnel_routes', array());
+        if (!empty($routes[$key]) && is_string($routes[$key])) return $routes[$key];
+        $local = array('corporate' => '/corporate-wellness/', 'contract' => '/contract-savings/', 'referral' => '/referrals/', 'quiz' => '/path-quiz/', 'waitlist' => '/walk-in-waitlist/', 'gift' => '/gift-cards/', 'seasonal' => '/seasonal-wellness/', 'reviews' => '/reviews/', 'insurance' => '/insurance-packages/', 'directory' => '/find-care/', 'commerce' => '/shop/', 'contact' => '/contact/', 'booking' => '/booking/');
+        return isset($local[$key]) ? home_url($local[$key]) : '';
+    }
 
     private static function block(string $name, array $attributes = array(), string $inner = ''): string {
         $json = $attributes === array() ? '' : ' ' . wp_json_encode($attributes, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
@@ -201,7 +256,7 @@ final class PCW_Renew48_Blocks {
         ) : array(
             array('title' => 'Therapeutic Massage', 'body' => 'Targeted bodywork shaped around your goals.'), array('title' => 'Reflexology', 'body' => 'A restorative service pathway with grounded expectations.'), array('title' => 'Cupping', 'body' => 'A focused recovery ritual for appropriate clients.'), array('title' => 'Customized Sessions', 'body' => 'A flexible service conversation for the season you are in.'),
         );
-        return self::block('cinematic-hero', array('theme' => $is_chiro ? 'chiro' : 'aroma', 'eyebrow' => $is_chiro ? 'ChiroGoAZ' : 'AromaHMT', 'title' => $is_chiro ? 'Move with more confidence.' : 'Make room to restore.', 'body' => 'Explore a service pathway, understand what to expect, then continue to the provider-owned booking experience.')) . self::block('immersive-service-galaxy', array('theme' => $is_chiro ? 'chiro' : 'aroma', 'eyebrow' => 'Service galaxy', 'title' => 'Find the right place to begin.', 'body' => 'Each card is editable. Replace these concise introductions with approved service language.', 'items' => $items, 'interaction' => 'hover-reveal')) . self::block('privacy-handoff', array('title' => 'Booking stays secure with your provider.', 'body' => 'This marketing page does not collect clinical information. Continue through the approved booking destination.', 'ctaLabel' => 'Continue to booking'));
+        return self::block('cinematic-hero', array('theme' => $is_chiro ? 'chiro' : 'aroma', 'eyebrow' => $is_chiro ? 'ChiroGoAZ' : 'AromaHMT', 'title' => $is_chiro ? 'Move with more confidence.' : 'Make room to restore.', 'body' => 'Explore a service pathway, understand what to expect, then continue to the provider-owned booking experience.')) . self::block('immersive-service-galaxy', array('theme' => $is_chiro ? 'chiro' : 'aroma', 'eyebrow' => 'Service galaxy', 'title' => 'Find the right place to begin.', 'body' => 'Each card is editable. Replace these concise introductions with approved service language.', 'items' => $items, 'interaction' => 'hover-reveal')) . self::block('privacy-handoff', array('title' => 'Booking stays secure with your provider.', 'body' => 'This marketing page does not collect clinical information. Continue through the approved booking destination.', 'ctaLabel' => 'Continue to booking', 'handoff' => 'booking', 'funnelId' => 'booking'));
     }
 
     private static function service_detail_content(): string {
@@ -213,14 +268,43 @@ final class PCW_Renew48_Blocks {
     }
 
     private static function referral_pattern_content(): string {
-        return self::block('cinematic-hero', array('eyebrow' => 'Referral & VIP pathway', 'title' => 'Share the care you trust.', 'body' => 'A privacy-safe referral invitation with no clinical details or referral health data collected here.')) . self::block('referral-program-flow', array('title' => 'Three clear steps.', 'items' => array(array('title' => 'Invite', 'body' => 'Share the approved referral link.'), array('title' => 'Connect', 'body' => 'Your guest chooses their own provider pathway.'), array('title' => 'Celebrate', 'body' => 'Approved, non-PHI referral status is handled by the source system.')))) . self::block('privacy-handoff', array('title' => 'Ready to refer?', 'body' => 'Continue through the approved referral system.', 'ctaLabel' => 'Open referral link'));
+        return self::block('cinematic-hero', array('eyebrow' => 'Referral & VIP pathway', 'title' => 'Share the care you trust.', 'body' => 'A privacy-safe referral invitation with no clinical details or referral health data collected here.')) . self::block('referral-program-flow', array('title' => 'Three clear steps.', 'funnelId' => 'referral', 'items' => array(array('title' => 'Invite', 'body' => 'Share the approved referral link.'), array('title' => 'Connect', 'body' => 'Your guest chooses their own provider pathway.'), array('title' => 'Celebrate', 'body' => 'Approved, non-PHI referral status is handled by the source system.')))) . self::block('privacy-handoff', array('title' => 'Ready to refer?', 'body' => 'Continue through the approved referral system.', 'ctaLabel' => 'Open referral link', 'handoff' => 'referral', 'funnelId' => 'referral'));
     }
 
     private static function funnel_pattern_content(string $slug): string {
         $labels = array('corporate-wellness' => 'Corporate, event & sports wellness', 'contract-savings' => 'Annual contract savings', 'path-quiz' => 'Choose your wellness path', 'walk-in-waitlist' => 'Walk-in & waitlist', 'gift-cards' => 'Give a wellness next step', 'seasonal-wellness' => 'Seasonal wellness', 'reviews' => 'Share your experience', 'insurance-packages-draft' => 'Insurance-friendly packages');
         $title = $labels[$slug];
         $draft = $slug === 'insurance-packages-draft' ? ' Draft only — requires business, payer, and compliance approval before activation.' : '';
-        return self::block('cinematic-hero', array('eyebrow' => 'Focused funnel', 'title' => $title, 'body' => 'An editable, privacy-safe funnel pattern.' . $draft)) . self::block('funnel-flow', array('title' => 'Choose a clear next step.', 'items' => array(array('title' => 'Explore', 'body' => 'Understand the offer and eligibility in plain language.'), array('title' => 'Choose', 'body' => 'Select a non-clinical direction or request a conversation.'), array('title' => 'Continue securely', 'body' => 'Handoff to the approved provider, commerce, or staff workflow.')))) . self::block('modal-trigger', array('title' => 'Ready when you are.', 'body' => 'Use this editable modal prompt to explain the privacy boundary before the handoff.', 'ctaLabel' => 'Continue'));
+        $handoff = str_replace(array('-wellness', '-savings', '-packages-draft'), '', $slug);
+        if ($slug === 'gift-cards') $handoff = 'gift';
+        if ($slug === 'path-quiz') $handoff = 'quiz';
+        if ($slug === 'walk-in-waitlist') $handoff = 'waitlist';
+        if ($slug === 'insurance-packages-draft') $handoff = 'insurance';
+        return self::block('cinematic-hero', array('eyebrow' => 'Focused funnel', 'title' => $title, 'body' => 'An editable, privacy-safe funnel pattern.' . $draft, 'funnelId' => $handoff)) . self::block('funnel-flow', array('title' => 'Choose a clear next step.', 'funnelId' => $handoff, 'items' => array(array('title' => 'Explore', 'body' => 'Understand the offer and eligibility in plain language.'), array('title' => 'Choose', 'body' => 'Select a non-clinical direction or request a conversation.'), array('title' => 'Continue securely', 'body' => 'Handoff to the approved provider, commerce, or staff workflow.')))) . self::block('privacy-handoff', array('title' => 'Ready when you are.', 'body' => 'Use this editable prompt to explain the privacy boundary before the handoff.', 'ctaLabel' => 'Continue', 'handoff' => $handoff, 'funnelId' => $handoff));
+    }
+
+    private static function collective_home_ui_content(): string {
+        return self::block('collective-header', array('title' => 'Renew48 Wellness Collective', 'eyebrow' => 'Many brands. One mission.', 'ctaLabel' => 'Find care', 'handoff' => 'directory')) . self::block('cinematic-hero', array('title' => 'Renew. Elevate. Together.', 'body' => 'Uniting exceptional wellness brands to elevate well-being.', 'ctaLabel' => 'Explore our brands', 'ctaUrl' => '/our-brands/', 'variant' => 'glass')) . self::block('brand-directory', array('title' => 'Find trusted care. All in one place.', 'items' => array(array('title' => 'ChiroGoAZ', 'body' => 'Chiropractic care · Phoenix, AZ · In-person & virtual', 'label' => 'View profile', 'url' => '/chirogoaz/'), array('title' => 'AromaHMT', 'body' => 'Massage therapy · Phoenix, AZ · In-person', 'label' => 'View profile', 'url' => '/aromahmt/'), array('title' => 'Future brand', 'body' => 'Specialized wellness · Coming soon', 'label' => 'Stay connected', 'url' => '/contact/')))) . self::block('collective-footer', array('title' => 'Renew48', 'body' => 'Many brands. One mission. Stronger together.'));
+    }
+
+    private static function member_services_ui_content(): string {
+        return self::block('collective-header', array('theme' => 'chiro', 'title' => 'ChiroGoAZ + AromaHMT', 'ctaLabel' => 'Book now', 'handoff' => 'booking')) . self::block('cinematic-hero', array('theme' => 'chiro', 'eyebrow' => 'Our services', 'title' => 'Healing. Movement. Wellness.', 'body' => 'Personalized care for every stage of your journey.', 'ctaLabel' => 'Book your session', 'handoff' => 'booking')) . self::block('service-masonry', array('theme' => 'chiro', 'title' => 'Explore our services', 'interaction' => 'hover-reveal', 'items' => array(array('title' => 'Chiropractic adjustments', 'body' => 'Relieve discomfort and restore movement.'), array('title' => 'Therapeutic massage', 'body' => 'Reduce stress and promote balance.'), array('title' => 'Deep tissue massage', 'body' => 'Target chronic pain and muscle tension.'), array('title' => 'Aroma therapy', 'body' => 'Essential oils to support relaxation.'), array('title' => 'Pregnancy massage', 'body' => 'Gentle, supportive care.'), array('title' => 'Myofascial release', 'body' => 'Improve mobility and movement.')))) . self::block('promo-banner', array('title' => 'New patient special', 'body' => 'A clear, approved introductory offer.', 'ctaLabel' => 'Claim offer', 'handoff' => 'booking')) . self::block('social-proof-strip', array('title' => 'Care built for the long view.', 'items' => array(array('title' => '10+', 'body' => 'Years of service'), array('title' => '5K+', 'body' => 'Patients helped'), array('title' => '100%', 'body' => 'Commitment to wellness'))));
+    }
+
+    private static function member_service_detail_ui_content(): string {
+        return self::block('service-detail-panel', array('theme' => 'aroma', 'title' => 'Therapeutic massage', 'body' => 'A clear editable service-detail frame with benefits and approved booking handoff.', 'items' => array(array('title' => 'Reduce stress', 'body' => 'Calms the nervous system.'), array('title' => 'Relieve tension', 'body' => 'Supports movement and comfort.'), array('title' => 'Promote balance', 'body' => 'Supports whole-body wellness.')))) . self::block('faq-accordion', array('title' => 'Questions, answered clearly.', 'items' => array(array('title' => 'What should I expect?', 'body' => 'Provider-specific guidance is confirmed in the secure booking system.'), array('title' => 'How long is a session?', 'body' => 'Review approved service options before booking.')))) . self::block('location-hours', array('title' => 'Visit the team', 'body' => 'Location, phone, hours, and map are editable public information only.')) . self::block('gallery-lightbox', array('title' => 'A closer look', 'body' => 'Use approved media-library images; this block opens images without collecting information.'));
+    }
+
+    private static function find_care_ui_content(): string {
+        return self::block('directory-filter', array('title' => 'Find trusted care. All in one place.', 'body' => 'Filter public provider and brand information by service or location.')) . self::block('brand-directory', array('title' => 'Member brands', 'items' => array(array('title' => 'ChiroGoAZ', 'body' => 'Chiropractic care · Phoenix, AZ', 'label' => 'View profile', 'url' => '/chirogoaz/'), array('title' => 'AromaHMT', 'body' => 'Massage therapy · Phoenix, AZ', 'label' => 'View profile', 'url' => '/aromahmt/'))));
+    }
+
+    private static function member_footer_ui_content(): string {
+        return self::block('newsletter-capture', array('title' => 'Stay inspired', 'body' => 'Wellness tips and updates with consent.')) . self::block('collective-footer', array('theme' => 'chiro', 'title' => 'ChiroGoAZ + AromaHMT', 'body' => 'Services · Resources · Contact · Privacy'));
+    }
+
+    private static function contract_suite_ui_content(): string {
+        return self::block('contract-suite', array('title' => 'Building a stronger, healthier Arizona.', 'eyebrow' => 'Contract & Commercial Suite', 'body' => 'A document-navigation workspace for approved public commercial materials. Never place member or patient records here.', 'items' => array(array('title' => 'Master agreement', 'body' => 'Foundation and terms.'), array('title' => 'Commercial schedule', 'body' => 'Pricing and operations.'), array('title' => 'Implementation statement of work', 'body' => 'Approved scope and delivery.')), 'ctaLabel' => 'Explore the agreements', 'handoff' => 'contract', 'funnelId' => 'contract-suite'));
     }
 
     private static function unleashed_standard_content(): string {

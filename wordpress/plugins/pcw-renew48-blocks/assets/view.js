@@ -30,4 +30,23 @@
     trigger.addEventListener('click', (event) => { event.preventDefault(); dialog.showModal(); });
     dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
   });
+  document.querySelectorAll('[data-pcw-drawer]').forEach((drawer) => {
+    const button = drawer.querySelector('[data-pcw-drawer-toggle]'); const nav = drawer.querySelector('nav');
+    if (!button || !nav) return;
+    button.addEventListener('click', () => { const open = button.getAttribute('aria-expanded') === 'true'; button.setAttribute('aria-expanded', String(!open)); nav.hidden = open; });
+  });
+  document.querySelectorAll('[data-pcw-newsletter]').forEach((form) => {
+    form.addEventListener('submit', (event) => { if (form.getAttribute('action')) return; event.preventDefault(); const status = form.querySelector('.pcw-r48-form-status'); if (status) status.textContent = 'Newsletter provider is not configured on this site yet.'; });
+  });
+  document.querySelectorAll('[data-pcw-tabs]').forEach((root) => {
+    const cards = [...root.querySelectorAll('.pcw-r48-item')]; if (cards.length < 2) return;
+    const controls = document.createElement('div'); controls.className = 'pcw-r48-tab-controls';
+    cards.forEach((card, index) => { card.hidden = index !== 0; const button = document.createElement('button'); button.type = 'button'; button.textContent = card.querySelector('h3')?.textContent || `Tab ${index + 1}`; button.setAttribute('aria-selected', String(index === 0)); button.addEventListener('click', () => { cards.forEach((item, itemIndex) => { item.hidden = itemIndex !== index; }); [...controls.children].forEach((control, controlIndex) => control.setAttribute('aria-selected', String(controlIndex === index))); }); controls.append(button); });
+    root.prepend(controls);
+  });
+  document.querySelectorAll('[data-pcw-gallery] img').forEach((image) => {
+    image.tabIndex = 0; image.setAttribute('role', 'button'); image.setAttribute('aria-label', `Open ${image.alt || 'image'}`);
+    const open = () => { const dialog = document.createElement('dialog'); dialog.className = 'pcw-r48-dialog'; dialog.innerHTML = '<form method="dialog"><button class="pcw-r48-dialog-close" aria-label="Close">×</button></form>'; const full = image.cloneNode(); full.removeAttribute('tabindex'); full.removeAttribute('role'); dialog.append(full); document.body.append(dialog); dialog.showModal(); dialog.addEventListener('close', () => dialog.remove()); };
+    image.addEventListener('click', open); image.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); } });
+  });
 })();
