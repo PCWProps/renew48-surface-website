@@ -1,0 +1,19 @@
+# PCW Renew48 Blocks
+
+This is a WordPress Gutenberg plugin for public, non-PHI marketing pages across Renew48, ChiroGoAZ, and AromaHMT.
+
+## Agent rules
+
+- Use a Renew48 pattern before generating bespoke markup.
+- Preserve existing page status; new campaign pages default to review/draft until approved.
+- Keep medical intake, appointment details, patient data, and membership records outside WordPress.
+- Direct booking to the approved provider system and commerce checkout to WooCommerce.
+- For all `insurance-packages-draft` uses, retain draft status until business, payer, and compliance approval is recorded.
+
+## Discoverable page patterns
+
+Use `renew48/chiropractic-services`, `renew48/massage-services`, `renew48/service-detail-flow`, `renew48/committed-wellness`, `renew48/referral-program`, and the named campaign patterns registered in `PCW_Renew48_Blocks::register_patterns`.
+
+## Block contract
+
+Every registered `renew48/*` block accepts public copy (`title`, `eyebrow`, `body`), CTA (`ctaLabel`, `ctaUrl`), presentation (`theme`, `variant`, `mediaUrl`, `mediaAlt`, `interaction`), and optional item arrays. Layout blocks also preserve nested Gutenberg blocks through InnerBlocks.

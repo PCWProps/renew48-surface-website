@@ -2,27 +2,41 @@
   const { registerBlockType } = blocks;
   const { createElement: el, Fragment } = element;
   const ServerSideRender = window.wp.serverSideRender && (window.wp.serverSideRender.default || window.wp.serverSideRender);
-  const { InspectorControls, RichText, useBlockProps } = blockEditor;
-  const { PanelBody, TextControl, SelectControl } = components;
-  const names = ['container','section','grid','flex-row','flex-column','spacer','divider','hero-primary','hero-split','hero-video','hero-service','cta-banner','service-card','service-grid','service-detail','service-comparison','service-accordion','membership-tier','membership-comparison','membership-benefits','membership-cta','booking-widget','availability-preview','lead-form','consultation-cta','funnel-step','faq-accordion','testimonial-slider','blog-preview','education-grid','glass-panel','liquid-glass','acrylic-card','neon-accent','parallax-layer','hover-reveal','scroll-reveal','header-cta','footer-columns','navigation-panel','breadcrumbs','alert-banner','unleashed-article'];
+  const { InspectorControls, RichText, InnerBlocks, useBlockProps } = blockEditor;
+  const { PanelBody, TextControl, SelectControl, TextareaControl } = components;
+  const names = ['container','section','grid','flex-row','flex-column','spacer','divider','hero-primary','hero-split','hero-video','hero-service','cta-banner','service-card','service-grid','service-detail','service-comparison','service-accordion','membership-tier','membership-comparison','membership-benefits','membership-cta','booking-widget','availability-preview','lead-form','consultation-cta','funnel-step','faq-accordion','testimonial-slider','blog-preview','education-grid','glass-panel','liquid-glass','acrylic-card','neon-accent','parallax-layer','hover-reveal','scroll-reveal','header-cta','footer-columns','navigation-panel','breadcrumbs','alert-banner','cinematic-hero','immersive-service-galaxy','service-galaxy-card','wellness-path-development','committed-wellness-flow','referral-program-flow','funnel-flow','funnel-choice','conversion-carousel','carousel-slide','modal-trigger','privacy-handoff','unleashed-article'];
+  const composed = new Set(['container','section','grid','flex-row','flex-column','hero-primary','hero-split','hero-service','cta-banner','service-grid','service-detail','service-comparison','membership-comparison','membership-benefits','membership-cta','booking-widget','consultation-cta','funnel-step','education-grid','glass-panel','liquid-glass','acrylic-card','hover-reveal','scroll-reveal','navigation-panel','footer-columns','cinematic-hero','immersive-service-galaxy','wellness-path-development','committed-wellness-flow','referral-program-flow','funnel-flow','conversion-carousel','modal-trigger','privacy-handoff']);
   const label = (name) => name.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const parseItems = (value) => { try { const parsed = JSON.parse(value || '[]'); return Array.isArray(parsed) ? parsed : []; } catch (_) { return []; } };
+  const itemHelp = 'Optional JSON cards. Example: [{"title":"Start","body":"A clear next step.","label":"Learn more","url":"/"}]';
+  const attributes = { title:{type:'string',default:''}, eyebrow:{type:'string',default:''}, body:{type:'string',default:''}, ctaLabel:{type:'string',default:''}, ctaUrl:{type:'string',default:''}, source:{type:'string',default:''}, site:{type:'string',default:''}, variant:{type:'string',default:'default'}, theme:{type:'string',default:'cobranded'}, mediaUrl:{type:'string',default:''}, mediaAlt:{type:'string',default:''}, interaction:{type:'string',default:'reveal'}, items:{type:'array',default:[]}, level:{type:'integer',default:2} };
   names.forEach((name) => registerBlockType(`renew48/${name}`, {
-    apiVersion: 3, title: `Renew48: ${label(name)}`, category: 'design', icon: 'layout', supports: { html: false, anchor: true, align: ['wide','full'] },
-    attributes: { title:{type:'string',default:label(name)}, eyebrow:{type:'string',default:''}, body:{type:'string',default:''}, ctaLabel:{type:'string',default:''}, ctaUrl:{type:'string',default:''}, source:{type:'string',default:''}, site:{type:'string',default:''}, variant:{type:'string',default:'default'}, items:{type:'array',default:[]}, level:{type:'integer',default:2} },
-    edit: ({attributes,setAttributes}) => name === 'unleashed-article' && ServerSideRender ? el(ServerSideRender, {block:'renew48/unleashed-article', attributes}) : el(Fragment, {},
-      el(InspectorControls, {}, el(PanelBody, {title:i18n.__('Renew48 settings','pcw-renew48')},
-        el(TextControl,{label:i18n.__('Eyebrow','pcw-renew48'),value:attributes.eyebrow,onChange:eyebrow=>setAttributes({eyebrow})}),
-        el(TextControl,{label:i18n.__('Public API source','pcw-renew48'),help:i18n.__('Only a configured public projection is loaded on the site.','pcw-renew48'),value:attributes.source,onChange:source=>setAttributes({source})}),
-        el(TextControl,{label:i18n.__('Site key','pcw-renew48'),value:attributes.site,onChange:site=>setAttributes({site})}),
-        el(TextControl,{label:i18n.__('CTA label','pcw-renew48'),value:attributes.ctaLabel,onChange:ctaLabel=>setAttributes({ctaLabel})}),
-        el(TextControl,{label:i18n.__('CTA URL','pcw-renew48'),value:attributes.ctaUrl,onChange:ctaUrl=>setAttributes({ctaUrl})}),
-        el(SelectControl,{label:i18n.__('Visual variation','pcw-renew48'),value:attributes.variant,options:[{label:'Default',value:'default'},{label:'Glass',value:'glass'},{label:'Quiet',value:'quiet'}],onChange:variant=>setAttributes({variant})})
-      )),
-      el('section',useBlockProps({className:`pcw-r48-editor pcw-r48-${name}`}),
-        attributes.eyebrow && el('p',{className:'pcw-r48-eyebrow'},attributes.eyebrow),
-        el(RichText,{tagName:'h2',value:attributes.title,onChange:title=>setAttributes({title}),placeholder:i18n.__('Heading','pcw-renew48')}),
-        el(RichText,{tagName:'p',value:attributes.body,onChange:body=>setAttributes({body}),placeholder:i18n.__('Supporting copy','pcw-renew48')})
-      )
-    ), save: () => null
+    apiVersion: 3, title: `Renew48: ${label(name)}`, category: 'design', icon: name.includes('funnel') ? 'filter' : name.includes('carousel') ? 'images-alt2' : 'layout', supports: { html: false, anchor: true, align: ['wide','full'] }, attributes,
+    edit: ({attributes: values,setAttributes}) => {
+      if (name === 'unleashed-article' && ServerSideRender) return el(ServerSideRender, {block:'renew48/unleashed-article', attributes:values});
+      const props = useBlockProps({className:`pcw-r48-editor pcw-r48-${name} is-theme-${values.theme}`});
+      const children = composed.has(name) ? el(InnerBlocks, {renderAppender: InnerBlocks.ButtonBlockAppender}) : null;
+      return el(Fragment, {},
+        el(InspectorControls, {}, el(PanelBody, {title:i18n.__('Renew48 block settings','pcw-renew48'), initialOpen:true},
+          el(SelectControl,{label:i18n.__('Brand theme','pcw-renew48'),value:values.theme,options:[{label:'Renew48 / Co-branded',value:'cobranded'},{label:'ChiroGoAZ',value:'chiro'},{label:'AromaHMT',value:'aroma'}],onChange:theme=>setAttributes({theme})}),
+          el(SelectControl,{label:i18n.__('Glass treatment','pcw-renew48'),value:values.variant,options:[{label:'Default',value:'default'},{label:'Ultra glass',value:'glass'},{label:'Acrylic glass',value:'acrylic'},{label:'Neon edge',value:'neon'},{label:'Quiet',value:'quiet'}],onChange:variant=>setAttributes({variant})}),
+          el(SelectControl,{label:i18n.__('Interaction','pcw-renew48'),value:values.interaction,options:[{label:'Reveal on scroll',value:'reveal'},{label:'Hover reveal',value:'hover-reveal'},{label:'Carousel',value:'carousel'},{label:'Static',value:'static'}],onChange:interaction=>setAttributes({interaction})}),
+          el(TextControl,{label:i18n.__('CTA label','pcw-renew48'),value:values.ctaLabel,onChange:ctaLabel=>setAttributes({ctaLabel})}),
+          el(TextControl,{label:i18n.__('CTA URL','pcw-renew48'),help:i18n.__('Use approved provider, commerce, or general contact destinations; never clinical intake.','pcw-renew48'),value:values.ctaUrl,onChange:ctaUrl=>setAttributes({ctaUrl})}),
+          el(TextControl,{label:i18n.__('Image URL','pcw-renew48'),value:values.mediaUrl,onChange:mediaUrl=>setAttributes({mediaUrl})}),
+          el(TextControl,{label:i18n.__('Image alt text','pcw-renew48'),value:values.mediaAlt,onChange:mediaAlt=>setAttributes({mediaAlt})}),
+          el(TextareaControl,{label:i18n.__('Card items','pcw-renew48'),help:itemHelp,value:JSON.stringify(values.items || [], null, 2),onChange:value=>setAttributes({items:parseItems(value)})}),
+          el(TextControl,{label:i18n.__('Public API source','pcw-renew48'),help:i18n.__('Only an approved non-PHI public projection is loaded.','pcw-renew48'),value:values.source,onChange:source=>setAttributes({source})})
+        )),
+        el('section',props,
+          values.mediaUrl && el('img',{className:'pcw-r48-editor-media',src:values.mediaUrl,alt:values.mediaAlt || ''}),
+          values.eyebrow && el('p',{className:'pcw-r48-eyebrow'},values.eyebrow),
+          el(RichText,{tagName:'h2',value:values.title,onChange:title=>setAttributes({title}),placeholder:i18n.__('Heading','pcw-renew48')}),
+          el(RichText,{tagName:'p',value:values.body,onChange:body=>setAttributes({body}),placeholder:i18n.__('Supporting copy','pcw-renew48')}),
+          children
+        )
+      );
+    },
+    save: () => composed.has(name) ? el(InnerBlocks.Content) : null
   }));
 })(window.wp.blocks, window.wp.element, window.wp.components, window.wp.blockEditor, window.wp.i18n);
