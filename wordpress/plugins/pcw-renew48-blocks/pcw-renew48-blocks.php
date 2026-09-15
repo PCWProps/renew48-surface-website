@@ -2,7 +2,7 @@
 /**
  * Plugin Name: PCW Renew48 Blocks
  * Description: Shared, privacy-safe Gutenberg block system for Renew48, ChiroGoAZ, and AromaHMT.
- * Version: 0.6.0
+ * Version: 0.6.1
  * Requires at least: 6.5
  * Requires PHP: 8.1
  * Text Domain: pcw-renew48
@@ -11,7 +11,7 @@
 defined('ABSPATH') || exit;
 
 final class PCW_Renew48_Blocks {
-    private const VERSION = '0.6.0';
+    private const VERSION = '0.6.1';
     private const UNLEASHED_MIGRATION = 'pcw_renew48_unleashed_standard_blocks_040';
     private const CACHE_GROUP = 'pcw_renew48_public';
 
@@ -117,7 +117,7 @@ final class PCW_Renew48_Blocks {
         $attrs = get_block_wrapper_attributes(array('class' => implode(' ', $classes), 'data-pcw-reveal' => $is_reveal ? 'true' : null, 'data-pcw-carousel' => $is_carousel ? 'true' : null, 'data-pcw-modal' => $slug === 'modal-trigger' ? 'true' : null, 'data-funnel' => $funnel_id ?: null, 'data-pcw-interaction' => sanitize_key((string) ($attributes['interaction'] ?? 'reveal'))));
         $heading = min(6, max(2, (int) ($attributes['level'] ?? 2)));
         $component = self::render_ui_component($slug, $attributes, $attrs, $title, $body, $heading, $funnel_id);
-        if ($component !== '') return $component;
+        if ($component !== '') return self::append_inner_content($component, $content);
         $out = '<' . $tag . ' ' . $attrs . '>';
         if (!empty($attributes['mediaUrl'])) $out .= '<figure class="pcw-r48-media"><img src="' . esc_url($attributes['mediaUrl']) . '" alt="' . esc_attr((string) ($attributes['mediaAlt'] ?? '')) . '" loading="lazy" decoding="async"></figure>';
         if (!empty($attributes['eyebrow'])) $out .= '<p class="pcw-r48-eyebrow">' . esc_html($attributes['eyebrow']) . '</p>';
@@ -147,6 +147,19 @@ final class PCW_Renew48_Blocks {
         if ($slug === 'toast-notice') return '<aside ' . $attrs . ' role="status">' . $heading_markup . $body_markup . '</aside>';
         if ($slug === 'back-to-top') return '<div ' . $attrs . '><a class="pcw-r48-cta" href="#top">Back to top</a></div>';
         return '';
+    }
+
+    /**
+     * Dynamic blocks that provide a specialized shell still need to render their
+     * serialized InnerBlocks on the front end. Gutenberg passes that markup as
+     * $content to the render callback; without this step, edits made inside a
+     * composed Renew48 block only appeared in the editor.
+     */
+    private static function append_inner_content(string $markup, string $content): string {
+        if ($content === '') return $markup;
+        $position = strrpos($markup, '</');
+        if ($position === false) return $markup . '<div class="pcw-r48-inner">' . $content . '</div>';
+        return substr($markup, 0, $position) . '<div class="pcw-r48-inner">' . $content . '</div>' . substr($markup, $position);
     }
 
     private static function render_unleashed_article(array $attributes): string {
