@@ -2,7 +2,7 @@
 /**
  * Plugin Name: PCW Renew48 Blocks
  * Description: Shared, privacy-safe Gutenberg block system for Renew48, ChiroGoAZ, and AromaHMT.
- * Version: 0.6.1
+ * Version: 0.7.0
  * Requires at least: 6.5
  * Requires PHP: 8.1
  * Text Domain: pcw-renew48
@@ -10,8 +10,10 @@
 
 defined('ABSPATH') || exit;
 
+require_once __DIR__ . '/includes/class-pcw-renew48-visual-renderers.php';
+
 final class PCW_Renew48_Blocks {
-    private const VERSION = '0.6.1';
+    private const VERSION = '0.7.0';
     private const UNLEASHED_MIGRATION = 'pcw_renew48_unleashed_standard_blocks_040';
     private const CACHE_GROUP = 'pcw_renew48_public';
 
@@ -50,11 +52,13 @@ final class PCW_Renew48_Blocks {
         wp_register_style('pcw-renew48-unleashed-layered', plugins_url('assets/unleashed-layered.css', __FILE__), array('pcw-renew48-approved-artwork'), self::VERSION);
         wp_register_style('pcw-renew48-unleashed-standard', plugins_url('assets/unleashed-standard.css', __FILE__), array(), self::VERSION);
         wp_register_style('pcw-renew48-ui-kit', plugins_url('assets/ui-kit.css', __FILE__), array('pcw-renew48-blocks'), self::VERSION);
+        wp_register_style('pcw-renew48-visual-components', plugins_url('assets/visual-components.css', __FILE__), array('pcw-renew48-blocks'), self::VERSION);
         wp_enqueue_style('pcw-renew48-unleashed');
         wp_enqueue_style('pcw-renew48-approved-artwork');
         wp_enqueue_style('pcw-renew48-unleashed-layered');
         wp_enqueue_style('pcw-renew48-unleashed-standard');
         wp_enqueue_style('pcw-renew48-ui-kit');
+        wp_enqueue_style('pcw-renew48-visual-components');
 
         foreach (self::BLOCKS as $slug) {
             register_block_type('renew48/' . $slug, array(
@@ -73,6 +77,7 @@ final class PCW_Renew48_Blocks {
     public static function enqueue_public_assets(): void {
         wp_enqueue_style('pcw-renew48-unleashed-standard');
         wp_enqueue_style('pcw-renew48-ui-kit');
+        wp_enqueue_style('pcw-renew48-visual-components');
         wp_enqueue_script('pcw-renew48-blocks-view');
     }
 
@@ -90,6 +95,10 @@ final class PCW_Renew48_Blocks {
             'mediaUrl' => array('type' => 'string', 'default' => ''),
             'mediaAlt' => array('type' => 'string', 'default' => ''),
             'interaction' => array('type' => 'string', 'default' => 'reveal'),
+            'surface' => array('type' => 'string', 'default' => 'solid'),
+            'density' => array('type' => 'string', 'default' => 'comfortable'),
+            'layout' => array('type' => 'string', 'default' => 'auto'),
+            'animation' => array('type' => 'string', 'default' => 'reveal'),
             'funnelId' => array('type' => 'string', 'default' => ''),
             'handoff' => array('type' => 'string', 'default' => ''),
             'formAction' => array('type' => 'string', 'default' => ''),
@@ -110,13 +119,14 @@ final class PCW_Renew48_Blocks {
             $title = $data['title'] ?? $title;
             $body = $data['body'] ?? $body;
         }
-        $classes = array('pcw-r48-block', 'pcw-r48-' . sanitize_html_class($slug), 'is-variant-' . sanitize_html_class((string) ($attributes['variant'] ?? 'default')), 'is-theme-' . sanitize_html_class((string) ($attributes['theme'] ?? 'cobranded')));
-        $is_reveal = in_array($slug, array('scroll-reveal', 'hero-primary', 'hero-split', 'cta-banner', 'cinematic-hero', 'immersive-service-galaxy', 'wellness-path-development', 'committed-wellness-flow', 'referral-program-flow', 'funnel-flow'), true);
+        $classes = array('pcw-r48-block', 'pcw-r48-' . sanitize_html_class($slug), 'is-variant-' . sanitize_html_class((string) ($attributes['variant'] ?? 'default')), 'is-theme-' . sanitize_html_class((string) ($attributes['theme'] ?? 'cobranded')), 'is-surface-' . sanitize_html_class((string) ($attributes['surface'] ?? 'solid')), 'is-density-' . sanitize_html_class((string) ($attributes['density'] ?? 'comfortable')), 'is-layout-' . sanitize_html_class((string) ($attributes['layout'] ?? 'auto')), 'is-animation-' . sanitize_html_class((string) ($attributes['animation'] ?? 'reveal')));
+        $is_reveal = (string) ($attributes['animation'] ?? 'reveal') !== 'none' && in_array($slug, array('scroll-reveal', 'hero-primary', 'hero-split', 'cta-banner', 'cinematic-hero', 'immersive-service-galaxy', 'wellness-path-development', 'committed-wellness-flow', 'referral-program-flow', 'funnel-flow'), true);
         $is_carousel = in_array($slug, array('testimonial-slider', 'conversion-carousel'), true);
         $funnel_id = sanitize_key((string) ($attributes['funnelId'] ?? self::funnel_id_for_slug($slug)));
         $attrs = get_block_wrapper_attributes(array('class' => implode(' ', $classes), 'data-pcw-reveal' => $is_reveal ? 'true' : null, 'data-pcw-carousel' => $is_carousel ? 'true' : null, 'data-pcw-modal' => $slug === 'modal-trigger' ? 'true' : null, 'data-funnel' => $funnel_id ?: null, 'data-pcw-interaction' => sanitize_key((string) ($attributes['interaction'] ?? 'reveal'))));
         $heading = min(6, max(2, (int) ($attributes['level'] ?? 2)));
-        $component = self::render_ui_component($slug, $attributes, $attrs, $title, $body, $heading, $funnel_id);
+        $component = PCW_Renew48_Visual_Renderers::render($slug, $attributes, $attrs, $title, $body, $heading, trim((string) ($attributes['ctaUrl'] ?? '')) ?: self::handoff_url((string) ($attributes['handoff'] ?? ''), $funnel_id));
+        if ($component === '') $component = self::render_ui_component($slug, $attributes, $attrs, $title, $body, $heading, $funnel_id);
         if ($component !== '') return self::append_inner_content($component, $content);
         $out = '<' . $tag . ' ' . $attrs . '>';
         if (!empty($attributes['mediaUrl'])) $out .= '<figure class="pcw-r48-media"><img src="' . esc_url($attributes['mediaUrl']) . '" alt="' . esc_attr((string) ($attributes['mediaAlt'] ?? '')) . '" loading="lazy" decoding="async"></figure>';
