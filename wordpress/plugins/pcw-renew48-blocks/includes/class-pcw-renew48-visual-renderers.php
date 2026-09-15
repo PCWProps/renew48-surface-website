@@ -23,7 +23,7 @@ final class PCW_Renew48_Visual_Renderers {
             return '<section ' . $wrapper . '><header class="pcw-r48-component-heading">' . $eyebrow . $heading . $copy . '</header><ul class="pcw-r48-masonry-grid" data-pcw-hover-reveal>' . $items . '</ul>' . $action . '</section>';
         }
         if ($slug === 'service-detail-panel') {
-            return '<section ' . $wrapper . '><div class="pcw-r48-detail-media">' . $media . '</div><div class="pcw-r48-detail-copy">' . $eyebrow . $heading . $copy . '</div><div class="pcw-r48-detail-benefits">' . $items . '</div>' . $action . '</section>';
+            return '<section ' . $wrapper . '><div class="pcw-r48-detail-media">' . $media . '</div><div class="pcw-r48-detail-copy">' . $eyebrow . $heading . $copy . '</div><ul class="pcw-r48-detail-benefits">' . $items . '</ul>' . $action . '</section>';
         }
         if (in_array($slug, array('booking-widget', 'booking-handoff', 'consultation-cta'), true)) {
             return '<section ' . $wrapper . '><div class="pcw-r48-handoff-copy">' . $eyebrow . $heading . $copy . '<p class="pcw-r48-boundary">Booking continues in the provider-owned system.</p>' . $action . '</div><div class="pcw-r48-handoff-steps" aria-label="Booking handoff steps"><span>Choose service</span><span>Choose a time</span><span>Continue securely</span></div></section>';
