@@ -31,7 +31,21 @@ The clinic must-use plugin deployment used only `wp-content/mu-plugins`, complet
 
 ## Consolidation gate
 
-No pages were deleted, unpublished, redirected, or bulk-modified in this release. No redirect map has been applied.
+### Completed retirement
+
+| Site | Source page | Disposition | Verified result |
+| --- | --- | --- | --- |
+| AromaHMT staging | ID 2, `/sample-page/` | Stock WordPress sample content with no menu or inbound content references. Redirected to the site homepage and moved to Trash. | `/sample-page/` returns a direct 301 to `/`; `/` returns 200; published page count changed from 82 to 81. |
+
+No other pages have been deleted, unpublished, redirected, or bulk-modified in this release. No other redirect map has been applied.
+
+### Canonical Gutenberg review draft
+
+| Site | Review draft | Source pages | State | Evidence |
+| --- | --- | --- | --- | --- |
+| AromaHMT staging | ID 2691, `/massage-services-gutenberg-review/` | IDs 275 (`/massage-services/`), 53 (`/services/`), and 206 (`/services-2/`) | Draft only; no public route, redirect, or retirement changed. | Operations 633000 and 633001 confirm draft/source state; 633079 confirms the cinematic hero and service masonry render server-side. |
+
+The draft preserves the unique service/session information from the prior mapping and uses the shared editable header, hero, service-masonry, privacy-handoff, and footer blocks. It cannot replace the live service page until desktop/mobile rendered comparison is resolved.
 
 For each canonical page, the next release must attach:
 
