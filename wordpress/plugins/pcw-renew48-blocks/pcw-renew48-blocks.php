@@ -54,6 +54,7 @@ final class PCW_Renew48_Blocks {
         wp_register_style('pcw-renew48-ui-kit', plugins_url('assets/ui-kit.css', __FILE__), array('pcw-renew48-blocks'), self::VERSION);
         wp_register_style('pcw-renew48-visual-components', plugins_url('assets/visual-components.css', __FILE__), array('pcw-renew48-blocks'), self::VERSION);
         wp_register_style('pcw-renew48-composition', plugins_url('assets/composition.css', __FILE__), array('pcw-renew48-visual-components'), self::VERSION);
+        wp_register_style('pcw-renew48-contrast-overrides', plugins_url('assets/contrast-overrides.css', __FILE__), array('pcw-renew48-composition'), self::VERSION);
         wp_enqueue_style('pcw-renew48-unleashed');
         wp_enqueue_style('pcw-renew48-approved-artwork');
         wp_enqueue_style('pcw-renew48-unleashed-layered');
@@ -61,6 +62,7 @@ final class PCW_Renew48_Blocks {
         wp_enqueue_style('pcw-renew48-ui-kit');
         wp_enqueue_style('pcw-renew48-visual-components');
         wp_enqueue_style('pcw-renew48-composition');
+        wp_enqueue_style('pcw-renew48-contrast-overrides');
 
         foreach (self::BLOCKS as $slug) {
             register_block_type('renew48/' . $slug, array(
@@ -81,6 +83,7 @@ final class PCW_Renew48_Blocks {
         wp_enqueue_style('pcw-renew48-ui-kit');
         wp_enqueue_style('pcw-renew48-visual-components');
         wp_enqueue_style('pcw-renew48-composition');
+        wp_enqueue_style('pcw-renew48-contrast-overrides');
         wp_enqueue_script('pcw-renew48-blocks-view');
     }
 
@@ -346,7 +349,7 @@ final class PCW_Renew48_Blocks {
         $desert = plugins_url('assets/r48-desert-glass-oasis.png', __FILE__);
         $healing = plugins_url('assets/r48-desert-wellness-spa.png', __FILE__);
         $movement = $asset . '04-movement-hiker.png';
-        $wellness = $asset . '05-wellness-foliage-card.png';
+        $wellness = $asset . '06-personal-care-interior.png';
         $gallery = array(
             array('title' => 'Chiropractic care', 'body' => 'A public, editable service introduction.', 'image' => $movement, 'alt' => 'Desert movement scene', 'label' => 'View service', 'url' => '/services/'),
             array('title' => 'Therapeutic massage', 'body' => 'A public, editable service introduction.', 'image' => $healing, 'alt' => 'Wellness still life', 'label' => 'View service', 'url' => '/services/'),
