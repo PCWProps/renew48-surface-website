@@ -7,7 +7,7 @@
  */
 defined('ABSPATH') || exit;
 
-const RENEW48_ASTRA_CHILD_VERSION = '0.7.0';
+const RENEW48_ASTRA_CHILD_VERSION = '0.8.0';
 const RENEW48_PRESENTATION_META = '_pcw_presentation_mode';
 
 function renew48_presentation_modes(): array {
@@ -34,6 +34,7 @@ add_action('init', static function (): void {
 
 add_action('wp_enqueue_scripts', static function (): void {
     wp_enqueue_style('renew48-astra-child', get_stylesheet_uri(), array('astra-theme-css'), RENEW48_ASTRA_CHILD_VERSION);
+    wp_enqueue_style('renew48-page-modes', get_stylesheet_directory_uri() . '/assets/page-modes.css', array('renew48-astra-child'), RENEW48_ASTRA_CHILD_VERSION);
 });
 
 add_action('enqueue_block_editor_assets', static function (): void {
@@ -49,6 +50,7 @@ add_action('enqueue_block_editor_assets', static function (): void {
 add_filter('body_class', static function (array $classes): array {
     if (!is_singular('page')) return $classes;
     $mode = get_post_meta(get_queried_object_id(), RENEW48_PRESENTATION_META, true);
+    $classes[] = 'pcw-page-shell';
     $classes[] = 'pcw-canvas-' . sanitize_html_class(in_array($mode, renew48_presentation_modes(), true) ? $mode : 'contained-desert');
     return $classes;
 });

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: PCW Renew48 Blocks
  * Description: Shared, privacy-safe Gutenberg block system for Renew48, ChiroGoAZ, and AromaHMT.
- * Version: 0.7.0
+ * Version: 0.8.0
  * Requires at least: 6.5
  * Requires PHP: 8.1
  * Text Domain: pcw-renew48
@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
 require_once __DIR__ . '/includes/class-pcw-renew48-visual-renderers.php';
 
 final class PCW_Renew48_Blocks {
-    private const VERSION = '0.7.0';
+    private const VERSION = '0.8.0';
     private const UNLEASHED_MIGRATION = 'pcw_renew48_unleashed_standard_blocks_040';
     private const CACHE_GROUP = 'pcw_renew48_public';
 
@@ -53,12 +53,14 @@ final class PCW_Renew48_Blocks {
         wp_register_style('pcw-renew48-unleashed-standard', plugins_url('assets/unleashed-standard.css', __FILE__), array(), self::VERSION);
         wp_register_style('pcw-renew48-ui-kit', plugins_url('assets/ui-kit.css', __FILE__), array('pcw-renew48-blocks'), self::VERSION);
         wp_register_style('pcw-renew48-visual-components', plugins_url('assets/visual-components.css', __FILE__), array('pcw-renew48-blocks'), self::VERSION);
+        wp_register_style('pcw-renew48-composition', plugins_url('assets/composition.css', __FILE__), array('pcw-renew48-visual-components'), self::VERSION);
         wp_enqueue_style('pcw-renew48-unleashed');
         wp_enqueue_style('pcw-renew48-approved-artwork');
         wp_enqueue_style('pcw-renew48-unleashed-layered');
         wp_enqueue_style('pcw-renew48-unleashed-standard');
         wp_enqueue_style('pcw-renew48-ui-kit');
         wp_enqueue_style('pcw-renew48-visual-components');
+        wp_enqueue_style('pcw-renew48-composition');
 
         foreach (self::BLOCKS as $slug) {
             register_block_type('renew48/' . $slug, array(
@@ -78,6 +80,7 @@ final class PCW_Renew48_Blocks {
         wp_enqueue_style('pcw-renew48-unleashed-standard');
         wp_enqueue_style('pcw-renew48-ui-kit');
         wp_enqueue_style('pcw-renew48-visual-components');
+        wp_enqueue_style('pcw-renew48-composition');
         wp_enqueue_script('pcw-renew48-blocks-view');
     }
 
@@ -220,7 +223,7 @@ final class PCW_Renew48_Blocks {
             'contract-savings' => 'Annual Contract Savings Funnel', 'path-quiz' => 'Wellness Path Quiz Funnel', 'walk-in-waitlist' => 'Walk-in & Waitlist Funnel',
             'gift-cards' => 'Gift Cards Funnel', 'seasonal-wellness' => 'Seasonal Wellness Funnel', 'reviews' => 'Reviews & Reputation Funnel', 'insurance-packages-draft' => 'Insurance Packages Draft Funnel',
             'collective-home-ui' => 'Collective Home UI', 'member-services-ui' => 'Member Services UI', 'member-service-detail-ui' => 'Member Service Detail UI',
-            'find-care-ui' => 'Find Care Directory UI', 'member-footer-ui' => 'Member Footer UI', 'contract-suite-ui' => 'Contract Suite UI',
+            'find-care-ui' => 'Find Care Directory UI', 'member-footer-ui' => 'Member Footer UI', 'contract-suite-ui' => 'Contract Suite UI', 'visual-system-showcase' => 'Visual System Showcase',
             'about' => 'About Page', 'contact' => 'Contact Page', 'blog-archive' => 'Blog Archive', 'blog-single' => 'Blog Single', 'faq' => 'FAQ Page',
             'header-cobranded' => 'CoBranded Header', 'header-chiro' => 'ChiroGoAZ Header', 'header-aroma' => 'AromaHMT Header',
             'footer-cobranded' => 'CoBranded Footer', 'footer-chiro' => 'ChiroGoAZ Footer', 'footer-aroma' => 'AromaHMT Footer', 'booking-privacy-modal' => 'Booking Privacy Modal',
@@ -244,6 +247,7 @@ final class PCW_Renew48_Blocks {
         if ($slug === 'find-care-ui') return self::find_care_ui_content();
         if ($slug === 'member-footer-ui') return self::member_footer_ui_content();
         if ($slug === 'contract-suite-ui') return self::contract_suite_ui_content();
+        if ($slug === 'visual-system-showcase') return self::visual_system_showcase_content();
         if ($slug === 'committed-wellness') return self::committed_wellness_content();
         if ($slug === 'chiropractic-services' || $slug === 'massage-services') return self::service_galaxy_content($slug);
         if ($slug === 'service-detail-flow') return self::service_detail_content();
@@ -328,6 +332,37 @@ final class PCW_Renew48_Blocks {
 
     private static function contract_suite_ui_content(): string {
         return self::block('contract-suite', array('title' => 'Building a stronger, healthier Arizona.', 'eyebrow' => 'Contract & Commercial Suite', 'body' => 'A document-navigation workspace for approved public commercial materials. Never place member or patient records here.', 'items' => array(array('title' => 'Master agreement', 'body' => 'Foundation and terms.'), array('title' => 'Commercial schedule', 'body' => 'Pricing and operations.'), array('title' => 'Implementation statement of work', 'body' => 'Approved scope and delivery.')), 'ctaLabel' => 'Explore the agreements', 'handoff' => 'contract', 'funnelId' => 'contract-suite'));
+    }
+
+    /**
+     * A staging acceptance composition, built only from editable Gutenberg
+     * blocks. It is deliberately a reference surface, not production copy.
+     */
+    public static function visual_system_showcase_content(): string {
+        $asset = plugins_url('assets/unleashed-v2/', __FILE__);
+        $desert = plugins_url('assets/r48-desert-glass-oasis.png', __FILE__);
+        $healing = plugins_url('assets/r48-desert-wellness-spa.png', __FILE__);
+        $movement = $asset . '04-movement-hiker.png';
+        $wellness = $asset . '05-wellness-foliage-card.png';
+        $gallery = array(
+            array('title' => 'Chiropractic care', 'body' => 'A public, editable service introduction.', 'image' => $movement, 'alt' => 'Desert movement scene', 'label' => 'View service', 'url' => '/services/'),
+            array('title' => 'Therapeutic massage', 'body' => 'A public, editable service introduction.', 'image' => $healing, 'alt' => 'Wellness still life', 'label' => 'View service', 'url' => '/services/'),
+            array('title' => 'Wellness paths', 'body' => 'A public, editable service introduction.', 'image' => $wellness, 'alt' => 'Desert wellness foliage', 'label' => 'View paths', 'url' => '/memberships/'),
+        );
+        return self::block('collective-header', array('title' => 'Renew48 Wellness Collective', 'eyebrow' => 'Staging visual system', 'ctaLabel' => 'Find care', 'handoff' => 'directory', 'surface' => 'translucent'))
+            . self::block('cinematic-hero', array('eyebrow' => 'Many brands. One mission.', 'title' => 'Renew. Elevate. Together.', 'body' => 'A staged, editable interpretation of the supplied Renew48 reference composition.', 'ctaLabel' => 'Explore brands', 'ctaUrl' => '/our-brands/', 'mediaUrl' => $desert, 'mediaAlt' => 'Sonoran desert at sunset', 'surface' => 'gradient-glass', 'animation' => 'guided'))
+            . self::block('brand-directory', array('eyebrow' => 'Find care', 'title' => 'Trusted wellness, all in one place.', 'body' => 'Directory records carry only public provider and brand information.', 'items' => array(array('title' => 'ChiroGoAZ', 'body' => 'Chiropractic care, Phoenix, Arizona.', 'label' => 'View profile', 'url' => '/chirogoaz/'), array('title' => 'AromaHMT', 'body' => 'Massage therapy, Phoenix, Arizona.', 'label' => 'View profile', 'url' => '/aromahmt/')), 'surface' => 'translucent'))
+            . self::block('service-masonry', array('eyebrow' => 'Service mosaic', 'title' => 'Explore your next step.', 'body' => 'Hover and touch reveal use the same readable service content.', 'items' => $gallery, 'interaction' => 'hover-reveal', 'layout' => 'masonry', 'surface' => 'gradient-glass'))
+            . self::block('service-detail-panel', array('eyebrow' => 'Service detail', 'title' => 'Therapeutic massage', 'body' => 'A focused public service frame with a secure booking handoff.', 'mediaUrl' => $healing, 'mediaAlt' => 'Wellness still life', 'items' => array(array('title' => 'Reduce stress', 'body' => 'Public service information.'), array('title' => 'Relieve tension', 'body' => 'Public service information.'), array('title' => 'Promote balance', 'body' => 'Public service information.')), 'ctaLabel' => 'Continue to booking', 'handoff' => 'booking', 'surface' => 'solid'))
+            . self::block('booking-handoff', array('eyebrow' => 'Booking handoff', 'title' => 'Continue in the provider system.', 'body' => 'No booking or health data is collected on this marketing surface.', 'ctaLabel' => 'Open booking', 'handoff' => 'booking', 'surface' => 'gradient-glass'))
+            . self::block('pricing-grid', array('eyebrow' => 'Packages', 'title' => 'Compare public options.', 'items' => array(array('title' => 'Chiropractic care', 'body' => 'Owner-approved pricing goes here.'), array('title' => 'Massage therapy', 'body' => 'Owner-approved pricing goes here.'), array('title' => 'Wellness packages', 'body' => 'Owner-approved pricing goes here.')), 'surface' => 'translucent'))
+            . self::block('gallery-lightbox', array('eyebrow' => 'Gallery', 'title' => 'Desert wellness imagery.', 'items' => $gallery, 'surface' => 'solid'))
+            . self::block('tabbed-content', array('eyebrow' => 'What to expect', 'title' => 'Choose the information you need.', 'items' => array(array('title' => 'Overview', 'body' => 'Public overview copy.'), array('title' => 'Benefits', 'body' => 'Owner-approved public benefits.'), array('title' => 'FAQs', 'body' => 'Use provider-approved answers.')), 'surface' => 'translucent'))
+            . self::block('newsletter-capture', array('eyebrow' => 'Stay inspired', 'title' => 'Wellness notes, when approved.', 'body' => 'The form remains inactive until consent and delivery are approved.', 'surface' => 'gradient-glass'))
+            . self::block('committed-wellness-flow', array('eyebrow' => 'Wellness flow', 'title' => 'A clear next step.', 'items' => array(array('title' => 'Explore', 'body' => 'Understand public options.'), array('title' => 'Choose', 'body' => 'Select a non-clinical direction.'), array('title' => 'Continue', 'body' => 'Hand off to the approved system.')), 'surface' => 'solid'))
+            . self::block('conversion-carousel', array('eyebrow' => 'Wellness experiences', 'title' => 'Browse the public pathways.', 'items' => $gallery, 'surface' => 'translucent'))
+            . self::block('contract-suite', array('eyebrow' => 'Commercial suite', 'title' => 'One mission. Many brands.', 'body' => 'Public commercial material only. Never member or patient records.', 'mediaUrl' => $desert, 'mediaAlt' => 'Arizona desert landscape', 'items' => array(array('title' => 'Master agreement', 'body' => 'Approved document scope.'), array('title' => 'Commercial schedule', 'body' => 'Approved document scope.'), array('title' => 'Implementation', 'body' => 'Approved document scope.')), 'ctaLabel' => 'View documents', 'handoff' => 'contract', 'surface' => 'gradient-glass'))
+            . self::block('collective-footer', array('title' => 'Renew48', 'body' => 'Many brands. One mission. Stronger together.', 'surface' => 'gradient-glass'));
     }
 
     private static function unleashed_standard_content(): string {
