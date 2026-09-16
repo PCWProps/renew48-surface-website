@@ -21,7 +21,7 @@
     controls.append(previous, next); root.append(controls);
   });
   document.querySelectorAll('[data-pcw-modal="true"]').forEach((root) => {
-    const trigger = root.querySelector('.pcw-r48-cta');
+    const trigger = root.querySelector('.pcw-r48-modal-open, .pcw-r48-cta');
     if (!trigger) return;
     const dialog = document.createElement('dialog'); dialog.className = 'pcw-r48-dialog';
     const title = root.querySelector('h1,h2,h3'); const body = root.querySelector('.pcw-r48-body');
@@ -29,19 +29,32 @@
     document.body.append(dialog);
     trigger.addEventListener('click', (event) => { event.preventDefault(); dialog.showModal(); });
     dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
+    dialog.addEventListener('close', () => { trigger.focus(); });
   });
   document.querySelectorAll('[data-pcw-drawer]').forEach((drawer) => {
     const button = drawer.querySelector('[data-pcw-drawer-toggle]'); const nav = drawer.querySelector('nav');
     if (!button || !nav) return;
-    button.addEventListener('click', () => { const open = button.getAttribute('aria-expanded') === 'true'; button.setAttribute('aria-expanded', String(!open)); nav.hidden = open; if (!open) nav.querySelector('a')?.focus(); });
+    const close = () => { button.setAttribute('aria-expanded', 'false'); nav.hidden = true; button.focus(); };
+    button.addEventListener('click', () => { const open = button.getAttribute('aria-expanded') === 'true'; if (open) return close(); button.setAttribute('aria-expanded', 'true'); nav.hidden = false; nav.querySelector('a')?.focus(); });
+    nav.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
   });
   document.querySelectorAll('[data-pcw-newsletter]').forEach((form) => {
     form.addEventListener('submit', (event) => { if (form.getAttribute('action')) return; event.preventDefault(); const status = form.querySelector('.pcw-r48-form-status'); if (status) status.textContent = 'Newsletter provider is not configured on this site yet.'; });
   });
+  document.querySelectorAll('[data-pcw-directory-filter]').forEach((form) => {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const root = form.closest('.pcw-r48-directory-filter'); const status = root?.querySelector('.pcw-r48-filter-status');
+      if (!status) return;
+      const data = new FormData(form); const filters = [data.get('q'), data.get('service'), data.get('location')].filter(Boolean);
+      status.textContent = filters.length ? `Filter selection ready: ${filters.join(', ')}. Results stay on this public directory surface.` : 'Showing all public directory results.';
+    });
+  });
   document.querySelectorAll('[data-pcw-tabs]').forEach((root) => {
     const cards = [...root.querySelectorAll('.pcw-r48-item')]; if (cards.length < 2) return;
     const controls = document.createElement('div'); controls.className = 'pcw-r48-tab-controls'; controls.setAttribute('role', 'tablist');
-    cards.forEach((card, index) => { const panelId = `pcw-r48-panel-${Math.random().toString(36).slice(2)}-${index}`; card.id = panelId; card.setAttribute('role', 'tabpanel'); card.hidden = index !== 0; const button = document.createElement('button'); button.type = 'button'; button.setAttribute('role', 'tab'); button.textContent = card.querySelector('h3')?.textContent || `Tab ${index + 1}`; button.setAttribute('aria-selected', String(index === 0)); button.setAttribute('aria-controls', panelId); button.tabIndex = index === 0 ? 0 : -1; button.addEventListener('click', () => { cards.forEach((item, itemIndex) => { item.hidden = itemIndex !== index; }); [...controls.children].forEach((control, controlIndex) => { control.setAttribute('aria-selected', String(controlIndex === index)); control.tabIndex = controlIndex === index ? 0 : -1; }); }); controls.append(button); });
+    const select = (index, focus = false) => { cards.forEach((item, itemIndex) => { item.hidden = itemIndex !== index; }); [...controls.children].forEach((control, controlIndex) => { control.setAttribute('aria-selected', String(controlIndex === index)); control.tabIndex = controlIndex === index ? 0 : -1; if (focus && controlIndex === index) control.focus(); }); };
+    cards.forEach((card, index) => { const panelId = `pcw-r48-panel-${Math.random().toString(36).slice(2)}-${index}`; card.id = panelId; card.setAttribute('role', 'tabpanel'); card.hidden = index !== 0; const button = document.createElement('button'); button.type = 'button'; button.setAttribute('role', 'tab'); button.textContent = card.querySelector('h3')?.textContent || `Tab ${index + 1}`; button.setAttribute('aria-selected', String(index === 0)); button.setAttribute('aria-controls', panelId); button.tabIndex = index === 0 ? 0 : -1; button.addEventListener('click', () => select(index)); button.addEventListener('keydown', (event) => { const keys = { ArrowRight: 1, ArrowLeft: -1, Home: -index, End: cards.length - 1 - index }; if (!(event.key in keys)) return; event.preventDefault(); select((index + keys[event.key] + cards.length) % cards.length, true); }); controls.append(button); });
     root.prepend(controls);
   });
   document.querySelectorAll('[data-pcw-gallery] img').forEach((image) => {

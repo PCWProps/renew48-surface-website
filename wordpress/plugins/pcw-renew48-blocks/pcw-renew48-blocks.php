@@ -2,7 +2,7 @@
 /**
  * Plugin Name: PCW Renew48 Blocks
  * Description: Shared, privacy-safe Gutenberg block system for Renew48, ChiroGoAZ, and AromaHMT.
- * Version: 0.8.0
+ * Version: 0.8.1
  * Requires at least: 6.5
  * Requires PHP: 8.1
  * Text Domain: pcw-renew48
@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
 require_once __DIR__ . '/includes/class-pcw-renew48-visual-renderers.php';
 
 final class PCW_Renew48_Blocks {
-    private const VERSION = '0.8.0';
+    private const VERSION = '0.8.1';
     private const UNLEASHED_MIGRATION = 'pcw_renew48_unleashed_standard_blocks_040';
     private const CACHE_GROUP = 'pcw_renew48_public';
 
@@ -150,9 +150,12 @@ final class PCW_Renew48_Blocks {
         $heading_markup = $title !== '' ? '<h' . $heading . '>' . esc_html($title) . '</h' . $heading . '>' : '';
         $body_markup = $body !== '' ? '<div class="pcw-r48-body">' . wp_kses_post(wpautop($body)) . '</div>' : '';
         if ($slug === 'collective-header') return '<header ' . $attrs . '><div><p class="pcw-r48-eyebrow">' . esc_html((string) ($attributes['eyebrow'] ?? 'Renew48 Wellness Collective')) . '</p>' . $heading_markup . '</div><nav aria-label="Collective navigation"><a href="' . esc_url(home_url('/our-brands/')) . '">Our brands</a><a href="' . esc_url(home_url('/wellness/')) . '">Wellness</a><a href="' . esc_url(home_url('/resources/')) . '">Resources</a><a href="' . esc_url(home_url('/contact/')) . '">Contact</a></nav>' . $cta_markup . '</header>';
-        if ($slug === 'mobile-menu-drawer') return '<aside ' . $attrs . ' data-pcw-drawer><button type="button" data-pcw-drawer-toggle aria-expanded="false">Menu</button><nav hidden aria-label="Mobile navigation"><a href="' . esc_url(home_url('/')) . '">Home</a><a href="' . esc_url(home_url('/our-brands/')) . '">Our brands</a><a href="' . esc_url(home_url('/wellness/')) . '">Wellness</a><a href="' . esc_url(home_url('/contact/')) . '">Contact</a>' . $cta_markup . '</nav></aside>';
+        if ($slug === 'mobile-menu-drawer') {
+            $drawer_id = wp_unique_id('pcw-r48-mobile-navigation-');
+            return '<aside ' . $attrs . ' data-pcw-drawer><button type="button" data-pcw-drawer-toggle aria-controls="' . esc_attr($drawer_id) . '" aria-expanded="false">Menu</button><nav id="' . esc_attr($drawer_id) . '" hidden aria-label="Mobile navigation"><a href="' . esc_url(home_url('/')) . '">Home</a><a href="' . esc_url(home_url('/our-brands/')) . '">Our brands</a><a href="' . esc_url(home_url('/wellness/')) . '">Wellness</a><a href="' . esc_url(home_url('/contact/')) . '">Contact</a>' . $cta_markup . '</nav></aside>';
+        }
         if ($slug === 'collective-footer') return '<footer ' . $attrs . '><div>' . $heading_markup . $body_markup . '</div><nav aria-label="Footer"><a href="' . esc_url(home_url('/privacy-policy/')) . '">Privacy</a><a href="' . esc_url(home_url('/terms/')) . '">Terms</a><a href="' . esc_url(home_url('/accessibility/')) . '">Accessibility</a></nav></footer>';
-        if ($slug === 'directory-filter') return '<section ' . $attrs . '>' . $heading_markup . $body_markup . '<form class="pcw-r48-filter-form" data-pcw-directory-filter><label>Search brands and services<input type="search" name="q" autocomplete="off"></label><select name="service"><option value="">All services</option><option>Chiropractic</option><option>Massage therapy</option><option>Wellness</option></select><select name="location"><option value="">All locations</option><option>Phoenix, AZ</option></select><button type="submit">Filter</button></form></section>';
+        if ($slug === 'directory-filter') return '<section ' . $attrs . '>' . $heading_markup . $body_markup . '<form class="pcw-r48-filter-form" data-pcw-directory-filter><label>Search brands and services<input type="search" name="q" autocomplete="off"></label><label>Service<select name="service"><option value="">All services</option><option>Chiropractic</option><option>Massage therapy</option><option>Wellness</option></select></label><label>Location<select name="location"><option value="">All locations</option><option>Phoenix, AZ</option></select></label><button type="submit">Filter</button></form><p class="pcw-r48-filter-status" role="status" aria-live="polite">Choose filters to refine public directory results.</p></section>';
         if ($slug === 'newsletter-capture') return '<section ' . $attrs . '>' . $heading_markup . $body_markup . '<form class="pcw-r48-newsletter" action="' . esc_url((string) ($attributes['formAction'] ?? '')) . '" method="post" data-pcw-newsletter><label>Email address<input type="email" name="email" required autocomplete="email"></label><button type="submit">Subscribe</button><p class="pcw-r48-form-status" aria-live="polite">Consent-based updates only.</p></form></section>';
         if ($slug === 'location-hours') return '<section ' . $attrs . '>' . $heading_markup . $body_markup . '<div class="pcw-r48-location-meta"><strong>Location</strong><span>Update address, phone, and hours in the block content.</span><a href="' . esc_url(home_url('/contact/')) . '">Contact the team</a></div></section>';
         if ($slug === 'gallery-lightbox') return '<section ' . $attrs . '>' . $heading_markup . $body_markup . '<div class="pcw-r48-gallery" data-pcw-gallery>' . $items . '</div></section>';

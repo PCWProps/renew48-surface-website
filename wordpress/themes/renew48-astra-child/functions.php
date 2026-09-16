@@ -7,7 +7,7 @@
  */
 defined('ABSPATH') || exit;
 
-const RENEW48_ASTRA_CHILD_VERSION = '0.8.0';
+const RENEW48_ASTRA_CHILD_VERSION = '0.8.1';
 const RENEW48_PRESENTATION_META = '_pcw_presentation_mode';
 
 function renew48_presentation_modes(): array {

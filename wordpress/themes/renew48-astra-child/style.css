@@ -1,6 +1,6 @@
 /* Theme Name: Renew48 Astra Child
  * Template: astra
- * Version: 0.8.0
+ * Version: 0.8.1
  * Text Domain: renew48-astra-child
  */
 :root{--pcw-color-ink:#102b26;--pcw-color-accent:#c58731;--pcw-color-surface:#fbf6ed;--pcw-color-muted:#45554d;--pcw-font-display:Georgia,'Times New Roman',serif;--pcw-font-body:'Avenir Next',Avenir,system-ui,sans-serif;--pcw-space-1:.5rem;--pcw-space-2:1rem;--pcw-space-3:1.5rem;--pcw-space-4:clamp(2.5rem,6vw,6.5rem);--pcw-radius-card:1rem;--pcw-radius-panel:1.75rem;--pcw-focus:#b56e12;--pcw-canvas:#f4ede1;--pcw-canvas-image:none;--pcw-surface-solid:rgba(251,246,237,.97);--pcw-surface-glass:rgba(20,48,42,.72);--pcw-surface-gradient:linear-gradient(145deg,rgba(12,39,34,.94),rgba(96,61,35,.78))}

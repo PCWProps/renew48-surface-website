@@ -43,6 +43,9 @@ final class PCW_Renew48_Visual_Renderers {
         if ($slug === 'newsletter-capture') {
             return '<section ' . $wrapper . '><div><header class="pcw-r48-component-heading">' . $eyebrow . $heading . $copy . '</header><p class="pcw-r48-consent">Consent-based updates only. Delivery remains inactive until approved.</p></div><form class="pcw-r48-newsletter" data-pcw-newsletter><label>Email address<input type="email" name="email" autocomplete="email" required></label><button type="submit">Subscribe</button><p class="pcw-r48-form-status" aria-live="polite"></p></form></section>';
         }
+        if ($slug === 'modal-trigger') {
+            return '<section ' . $wrapper . '><div class="pcw-r48-modal-card">' . $eyebrow . $heading . $copy . '<button class="pcw-r48-modal-open" type="button">' . esc_html((string) ($attributes['ctaLabel'] ?: 'Open details')) . '</button></div></section>';
+        }
         if (in_array($slug, array('wellness-path-development', 'committed-wellness-flow', 'referral-program-flow', 'funnel-flow'), true)) {
             return '<section ' . $wrapper . '><header class="pcw-r48-component-heading">' . $eyebrow . $heading . $copy . '</header><ol class="pcw-r48-flow-steps">' . $items . '</ol>' . $action . '</section>';
         }
