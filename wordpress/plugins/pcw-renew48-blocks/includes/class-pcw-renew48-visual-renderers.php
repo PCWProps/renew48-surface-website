@@ -65,8 +65,13 @@ final class PCW_Renew48_Visual_Renderers {
     }
 
     private static function media(array $attributes): string {
-        if (empty($attributes['mediaUrl'])) return '<div class="pcw-r48-media-fallback" aria-hidden="true"></div>';
-        return '<img src="' . esc_url((string) $attributes['mediaUrl']) . '" alt="' . esc_attr((string) ($attributes['mediaAlt'] ?? '')) . '" loading="eager" decoding="async">';
+        $url = trim((string) ($attributes['mediaUrl'] ?? ''));
+        $alt = (string) ($attributes['mediaAlt'] ?? '');
+        if ($url === '') {
+            $url = plugins_url('assets/r48-desert-glass-oasis.png', dirname(__DIR__) . '/pcw-renew48-blocks.php');
+            if ($alt === '') $alt = 'Sonoran desert at sunset';
+        }
+        return '<img src="' . esc_url($url) . '" alt="' . esc_attr($alt) . '" loading="eager" decoding="async">';
     }
 
     private static function items($items): string {
