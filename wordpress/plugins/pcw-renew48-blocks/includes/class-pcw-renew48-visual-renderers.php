@@ -68,7 +68,7 @@ final class PCW_Renew48_Visual_Renderers {
         $url = trim((string) ($attributes['mediaUrl'] ?? ''));
         $alt = (string) ($attributes['mediaAlt'] ?? '');
         if ($url === '') {
-            $url = plugins_url('assets/r48-desert-glass-oasis.png', dirname(__DIR__) . '/pcw-renew48-blocks.php');
+            $url = plugins_url('assets/unleashed-hero-desert.png', dirname(__DIR__) . '/pcw-renew48-blocks.php');
             if ($alt === '') $alt = 'Sonoran desert at sunset';
         }
         return '<img src="' . esc_url($url) . '" alt="' . esc_attr($alt) . '" loading="eager" decoding="async">';
