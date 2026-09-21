@@ -31,6 +31,10 @@ function renew48_liquid_glass_themes(): array {
 }
 
 function renew48_sanitize_media_meta($value): array {
+    if (is_string($value)) {
+        $decoded = json_decode($value, true);
+        $value = is_array($decoded) ? $decoded : array();
+    }
     $value = is_array($value) ? $value : array();
     $position = preg_match('/^(left|center|right)\s+(top|center|bottom)$/', (string) ($value['position'] ?? 'center center')) ? (string) $value['position'] : 'center center';
     $mobile_position = preg_match('/^(left|center|right)\s+(top|center|bottom)$/', (string) ($value['mobilePosition'] ?? $position)) ? (string) ($value['mobilePosition'] ?? $position) : $position;
