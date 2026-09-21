@@ -2,7 +2,7 @@
 /**
  * Plugin Name: PCW Renew48 Blocks
  * Description: Shared, privacy-safe Gutenberg block system for Renew48, ChiroGoAZ, and AromaHMT.
- * Version: 0.8.1
+ * Version: 0.9.0
  * Requires at least: 6.5
  * Requires PHP: 8.1
  * Text Domain: pcw-renew48
@@ -13,7 +13,7 @@ defined('ABSPATH') || exit;
 require_once __DIR__ . '/includes/class-pcw-renew48-visual-renderers.php';
 
 final class PCW_Renew48_Blocks {
-    private const VERSION = '0.8.1';
+    private const VERSION = '0.9.0';
     private const UNLEASHED_MIGRATION = 'pcw_renew48_unleashed_standard_blocks_040';
     private const CACHE_GROUP = 'pcw_renew48_public';
 
