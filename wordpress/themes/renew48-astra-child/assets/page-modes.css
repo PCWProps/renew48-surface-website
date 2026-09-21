@@ -1,2 +1,8 @@
 /* Canvas-only rules. Components inherit this context and do not pick page art. */
 body.pcw-canvas-full-bleed-glass{--pcw-canvas-image:linear-gradient(112deg,rgba(8,30,27,.87),rgba(48,38,30,.52)),url('/wp-content/plugins/pcw-renew48-blocks/assets/r48-desert-glass-oasis.png')}body.pcw-canvas-contained-desert .entry-content>.pcw-r48-block{background-color:var(--pcw-surface-solid)}body.pcw-canvas-masked-parallax .entry-content>.pcw-r48-block{backdrop-filter:blur(10px);background:rgba(251,246,237,.7);overflow:hidden}body.pcw-canvas-full-bleed-glass .entry-content>.pcw-r48-block:not(.pcw-r48-cinematic-hero){backdrop-filter:blur(18px) saturate(1.12);background:rgba(8,34,30,.56);border-color:rgba(255,255,255,.3)}body.pcw-canvas-full-bleed-glass .entry-content>.pcw-r48-block :is(h2,h3){color:#fff}@media(max-width:760px){body.pcw-canvas-full-bleed-glass .entry-content>.pcw-r48-block:not(.pcw-r48-cinematic-hero){backdrop-filter:blur(12px)}}
+/* Keep the shared collective shell visually attached to the cinematic hero. */
+body.pcw-page-shell .entry-content{padding-top:0}
+body.pcw-page-shell .entry-content>.pcw-r48-collective-header{margin-top:0;margin-bottom:-8rem;position:relative;z-index:5}
+body.pcw-page-shell .entry-content>.pcw-r48-collective-header+.pcw-r48-mobile-menu-drawer{margin:0;min-height:0;position:relative;z-index:6}
+body.pcw-page-shell .entry-content>.pcw-r48-mobile-menu-drawer+.pcw-r48-cinematic-hero{margin-top:0}
+@media(max-width:760px){body.pcw-page-shell .entry-content>.pcw-r48-collective-header{margin-bottom:-3rem}}
