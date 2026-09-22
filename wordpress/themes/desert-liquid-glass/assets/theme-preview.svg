@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-label="Desert Liquid Glass public website preview">
+  <defs>
+    <linearGradient id="ink" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0d2f2a"/><stop offset="1" stop-color="#244f45"/></linearGradient>
+    <linearGradient id="fade" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#0e302a" stop-opacity=".92"/><stop offset=".68" stop-color="#10342d" stop-opacity=".43"/><stop offset="1" stop-color="#10342d" stop-opacity=".08"/></linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#edc77b"/><stop offset="1" stop-color="#bb7c39"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#16352f" flood-opacity=".2"/></filter>
+    <clipPath id="hero"><rect x="54" y="96" width="1092" height="385" rx="24"/></clipPath>
+  </defs>
+  <rect width="1200" height="900" fill="#f4eee4"/>
+  <rect x="0" y="0" width="1200" height="72" fill="#fffdf9"/>
+  <path d="M54 71h1092" stroke="#dfc9ac"/>
+  <g font-family="Arial, sans-serif" fill="#153b35">
+    <text x="54" y="42" font-family="Georgia, serif" font-size="26">DESERT</text>
+    <text x="54" y="60" font-size="9" font-weight="700" letter-spacing="3">LIQUID GLASS</text>
+    <text x="712" y="42" font-size="11" font-weight="700" letter-spacing="1.5">WORK</text>
+    <text x="786" y="42" font-size="11" font-weight="700" letter-spacing="1.5">JOURNAL</text>
+    <text x="880" y="42" font-size="11" font-weight="700" letter-spacing="1.5">ABOUT</text>
+    <rect x="984" y="23" width="162" height="30" rx="15" fill="#17443d"/>
+    <text x="1006" y="43" font-size="10" font-weight="700" fill="#fff">START A PROJECT</text>
+  </g>
+  <g clip-path="url(#hero)"><rect x="54" y="96" width="1092" height="385" fill="#c6976d"/><circle cx="930" cy="190" r="74" fill="#f1d492" opacity=".9"/><path d="M54 437 270 300l115 81 164-164 132 121 115-166 350 265z" fill="#5d6657" opacity=".8"/><path d="M54 481 301 350l156 93 138-116 167 102 159-171 225 223z" fill="#29483e" opacity=".86"/><path d="M950 452v-119c0-25 29-25 29 0v119m-43 0v-63c0-15-18-15-18 0v33m61 30v-92c0-18 21-18 21 0v55" fill="none" stroke="#173a38" stroke-width="16" stroke-linecap="round"/><rect x="54" y="96" width="1092" height="385" fill="url(#fade)"/></g>
+  <g fill="#fff"><text x="110" y="164" font-family="Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="3">A PUBLIC WEBSITE FOUNDATION</text><text x="108" y="250" font-family="Georgia, serif" font-size="64">A material system</text><text x="108" y="322" font-family="Georgia, serif" font-size="64">with a sense of place.</text><text x="110" y="366" font-family="Arial, sans-serif" font-size="18" opacity=".9">Clear architecture for themes, media, mode, and surfaces.</text><rect x="109" y="400" width="160" height="42" rx="21" fill="url(#gold)"/><text x="135" y="426" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#193b35">VIEW THE SYSTEM</text></g>
+  <g filter="url(#shadow)">
+    <rect x="54" y="514" width="340" height="230" rx="16" fill="#fffdf9"/>
+    <rect x="418" y="514" width="340" height="230" rx="16" fill="#21463e"/>
+    <rect x="782" y="514" width="364" height="230" rx="16" fill="#e5d3bd"/>
+  </g>
+  <g font-family="Arial, sans-serif"><text x="82" y="550" font-size="10" font-weight="700" letter-spacing="2" fill="#bd7d3a">CONTAINED DESERT</text><text x="82" y="594" font-family="Georgia, serif" font-size="31" fill="#173a38">Sections with</text><text x="82" y="631" font-family="Georgia, serif" font-size="31" fill="#173a38">intentional media.</text><path d="M82 681h126" stroke="#bd7d3a" stroke-width="2"/><text x="82" y="709" font-size="12" font-weight="700" fill="#173a38">BUILD WITH PURPOSE</text>
+  <text x="446" y="550" font-size="10" font-weight="700" letter-spacing="2" fill="#e5bb76">MASKED PARALLAX</text><text x="446" y="594" font-family="Georgia, serif" font-size="31" fill="#fff">One image plane.</text><text x="446" y="631" font-family="Georgia, serif" font-size="31" fill="#fff">Bounded windows.</text><path d="M446 681h126" stroke="#e5bb76" stroke-width="2"/><text x="446" y="709" font-size="12" font-weight="700" fill="#fff">KEEP EXPLORING</text>
+  <text x="810" y="550" font-size="10" font-weight="700" letter-spacing="2" fill="#95612e">FULL-BLEED GLASS</text><text x="810" y="594" font-family="Georgia, serif" font-size="31" fill="#173a38">Media remains</text><text x="810" y="631" font-family="Georgia, serif" font-size="31" fill="#173a38">behind the surface.</text><path d="M810 681h126" stroke="#95612e" stroke-width="2"/><text x="810" y="709" font-size="12" font-weight="700" fill="#173a38">OPEN THE GUIDE</text></g>
+  <rect x="54" y="786" width="1092" height="1" fill="#d7c6af"/>
+  <g font-family="Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="1.5" fill="#4a625c"><text x="54" y="827">DESERT LIQUID GLASS</text><text x="522" y="827">THEME · MODE · MEDIA · SURFACE</text><text x="1012" y="827">WORDPRESS + ASTRA</text></g>
+</svg>

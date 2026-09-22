@@ -2,7 +2,7 @@
 /**
  * Plugin Name: PCW Renew48 Blocks
  * Description: Shared, privacy-safe Gutenberg block system for Renew48, ChiroGoAZ, and AromaHMT.
- * Version: 0.9.1
+ * Version: 0.9.2
  * Requires at least: 6.5
  * Requires PHP: 8.1
  * Text Domain: pcw-renew48
@@ -13,9 +13,11 @@ defined('ABSPATH') || exit;
 require_once __DIR__ . '/includes/class-pcw-renew48-visual-renderers.php';
 
 final class PCW_Renew48_Blocks {
-    private const VERSION = '0.9.1';
+    private const VERSION = '0.9.2';
     private const UNLEASHED_MIGRATION = 'pcw_renew48_unleashed_standard_blocks_040';
     private const CACHE_GROUP = 'pcw_renew48_public';
+
+    public const VERSION_PUBLIC = '0.9.2';
 
     private const BLOCKS = array(
         'container', 'section', 'grid', 'flex-row', 'flex-column', 'spacer', 'divider',
@@ -39,8 +41,8 @@ final class PCW_Renew48_Blocks {
         add_action('init', array(__CLASS__, 'register'));
         add_action('init', array(__CLASS__, 'register_patterns'));
         add_action('rest_api_init', array(__CLASS__, 'register_rest'));
-        add_action('admin_init', array(__CLASS__, 'migrate_unleashed_page'));
         add_action('wp_enqueue_scripts', array(__CLASS__, 'enqueue_public_assets'));
+        require_once __DIR__ . '/includes/admin.php';
     }
 
     public static function register(): void {
@@ -55,6 +57,7 @@ final class PCW_Renew48_Blocks {
         wp_register_style('pcw-renew48-visual-components', plugins_url('assets/visual-components.css', __FILE__), array('pcw-renew48-blocks'), self::VERSION);
         wp_register_style('pcw-renew48-composition', plugins_url('assets/composition.css', __FILE__), array('pcw-renew48-visual-components'), self::VERSION);
         wp_register_style('pcw-renew48-contrast-overrides', plugins_url('assets/contrast-overrides.css', __FILE__), array('pcw-renew48-composition'), self::VERSION);
+        wp_register_style('pcw-renew48-surface', plugins_url('assets/surface.css', __FILE__), array('pcw-renew48-contrast-overrides'), self::VERSION);
         wp_enqueue_style('pcw-renew48-unleashed');
         wp_enqueue_style('pcw-renew48-approved-artwork');
         wp_enqueue_style('pcw-renew48-unleashed-layered');
@@ -63,6 +66,7 @@ final class PCW_Renew48_Blocks {
         wp_enqueue_style('pcw-renew48-visual-components');
         wp_enqueue_style('pcw-renew48-composition');
         wp_enqueue_style('pcw-renew48-contrast-overrides');
+        wp_enqueue_style('pcw-renew48-surface');
 
         foreach (self::BLOCKS as $slug) {
             register_block_type('renew48/' . $slug, array(
@@ -84,6 +88,7 @@ final class PCW_Renew48_Blocks {
         wp_enqueue_style('pcw-renew48-visual-components');
         wp_enqueue_style('pcw-renew48-composition');
         wp_enqueue_style('pcw-renew48-contrast-overrides');
+        wp_enqueue_style('pcw-renew48-surface');
         wp_enqueue_script('pcw-renew48-blocks-view');
     }
 
@@ -115,7 +120,7 @@ final class PCW_Renew48_Blocks {
 
     public static function render_block(array $attributes, string $content, $block): string {
         $slug = isset($block->name) ? str_replace('renew48/', '', $block->name) : 'section';
-        if ($slug === 'unleashed-article') return self::render_unleashed_article($attributes);
+        if ($slug === 'unleashed-article') return self::add_surface_layers(self::render_unleashed_article($attributes), $attributes);
         $tag = in_array($slug, array('container', 'section', 'grid', 'flex-row', 'flex-column', 'spacer', 'divider', 'service-galaxy-card', 'carousel-slide', 'funnel-choice'), true) ? 'div' : 'section';
         $title = trim((string) ($attributes['title'] ?? ''));
         $body = trim((string) ($attributes['body'] ?? ''));
@@ -133,7 +138,7 @@ final class PCW_Renew48_Blocks {
         $heading = min(6, max(2, (int) ($attributes['level'] ?? 2)));
         $component = PCW_Renew48_Visual_Renderers::render($slug, $attributes, $attrs, $title, $body, $heading, trim((string) ($attributes['ctaUrl'] ?? '')) ?: self::handoff_url((string) ($attributes['handoff'] ?? ''), $funnel_id));
         if ($component === '') $component = self::render_ui_component($slug, $attributes, $attrs, $title, $body, $heading, $funnel_id);
-        if ($component !== '') return self::append_inner_content($component, $content);
+        if ($component !== '') return self::append_inner_content(self::add_surface_layers($component, $attributes), $content);
         $out = '<' . $tag . ' ' . $attrs . '>';
         if (!empty($attributes['mediaUrl'])) $out .= '<figure class="pcw-r48-media"><img src="' . esc_url($attributes['mediaUrl']) . '" alt="' . esc_attr((string) ($attributes['mediaAlt'] ?? '')) . '" loading="lazy" decoding="async"></figure>';
         if (!empty($attributes['eyebrow'])) $out .= '<p class="pcw-r48-eyebrow">' . esc_html($attributes['eyebrow']) . '</p>';
@@ -143,7 +148,18 @@ final class PCW_Renew48_Blocks {
         $cta_url = trim((string) ($attributes['ctaUrl'] ?? '')) ?: self::handoff_url((string) ($attributes['handoff'] ?? ''), $funnel_id);
         if (!empty($attributes['ctaLabel']) && $cta_url !== '') $out .= '<a class="pcw-r48-cta" href="' . esc_url($cta_url) . '"' . (in_array($slug, array('privacy-handoff', 'booking-handoff', 'commerce-handoff'), true) ? ' rel="noopener" target="_blank"' : '') . '>' . esc_html($attributes['ctaLabel']) . '</a>';
         if ($content !== '') $out .= '<div class="pcw-r48-inner">' . $content . '</div>';
-        return $out . '</' . $tag . '>';
+        return self::add_surface_layers($out . '</' . $tag . '>', $attributes);
+    }
+
+    private static function add_surface_layers(string $html, array $attributes): string {
+        $open_end = strpos($html, '>');
+        $close_start = strrpos($html, '</');
+        if ($open_end === false || $close_start === false || $close_start <= $open_end) return $html;
+        $root_open = substr($html, 0, $open_end + 1);
+        $inner = substr($html, $open_end + 1, $close_start - $open_end - 1);
+        $root_close = substr($html, $close_start);
+        $surface_class = 'pcw-r48-surface' . (!empty($attributes['mediaUrl']) ? ' has-component-media' : '');
+        return $root_open . '<div class="' . esc_attr($surface_class) . '" data-pcw-surface><div class="pcw-r48-surface-media" aria-hidden="true"></div><div class="pcw-r48-surface-material" aria-hidden="true"></div><div class="pcw-r48-surface-content">' . $inner . '</div></div>' . $root_close;
     }
 
     private static function render_ui_component(string $slug, array $attributes, string $attrs, string $title, string $body, int $heading, string $funnel_id): string {

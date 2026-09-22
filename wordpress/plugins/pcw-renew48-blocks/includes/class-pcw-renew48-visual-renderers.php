@@ -67,7 +67,7 @@ final class PCW_Renew48_Visual_Renderers {
     private static function media(array $attributes): string {
         $url = trim((string) ($attributes['mediaUrl'] ?? ''));
         $alt = (string) ($attributes['mediaAlt'] ?? '');
-        if ($url === '') return '<div class="pcw-r48-media-fallback" aria-hidden="true"></div>';
+        if ($url === '') return '';
         return '<img src="' . esc_url($url) . '" alt="' . esc_attr($alt) . '" loading="eager" decoding="async">';
     }
 

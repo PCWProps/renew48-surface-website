@@ -1,0 +1,7 @@
+# Desert Liquid Glass
+
+Installable Astra-compatible WordPress theme. Owns generic presentation, tokens, page modes, media planes, responsive behavior, accessibility, reduced motion, admin settings, and WooCommerce styling.
+
+Free/Pro: Free is active by default. Pro is unconfigured and fails closed. No remote licensing contract is assumed.
+
+Optional integration: Renew-48 plugin. The theme never stores or processes Renew-48 business state.

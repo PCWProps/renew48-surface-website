@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 92" role="img" aria-labelledby="title desc">
+  <title id="title">Renew48 Wellness Collective</title><desc id="desc">Renew48 Wellness Collective wordmark</desc>
+  <g fill="none" stroke="#d48745" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M34 8c-3 16-16 22-16 38 0 15 10 25 22 25s22-10 22-25C62 30 45 24 42 8c-2 12-8 19-8 27 0 7 3 12 7 16 4-4 7-9 7-16 0-8-6-15-8-27z"/>
+    <path d="M16 76c12 7 31 7 47 0"/>
+  </g>
+  <text x="82" y="45" fill="#173a38" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="700" letter-spacing="6">RENEW<tspan fill="#d48745">48</tspan></text>
+  <text x="84" y="72" fill="#526865" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="700" letter-spacing="3.2">WELLNESS COLLECTIVE</text>
+</svg>
